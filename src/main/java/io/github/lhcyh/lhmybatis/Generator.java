@@ -701,27 +701,29 @@ public class Generator{
 
     private Boolean checkForeignKey(List<ForeignKey> foreignKeyList){
         Set<String> fSet=new HashSet<>();
-        for(ForeignKey foreignKey:foreignKeyList){
-            if(foreignKey.getFieldName()==null){
-                JOptionPane.showMessageDialog(null,"请选择外键");
-                return false;
-            }
-            if(foreignKey.getReferencedTableName()==null){
-                JOptionPane.showMessageDialog(null,"请选择参考表");
-                return false;
-            }
-            if(foreignKey.getReferencedFieldName()==null){
-                JOptionPane.showMessageDialog(null,"请选择参考列");
-                return false;
-            }
-            if(foreignKey.getAssociate()==null){
-                JOptionPane.showMessageDialog(null,"请选择外键联系");
-                return false;
-            }
-            Boolean tag=fSet.add(foreignKey.getFieldName()+"_" + foreignKey.getReferencedTableName()+"_"+foreignKey.getReferencedFieldName()+"_"+foreignKey.getAssociate());
-            if(!tag){
-                JOptionPane.showMessageDialog(null,"外键联系重复，请删除");
-                return false;
+        if(foreignKeyList!=null) {
+            for (ForeignKey foreignKey : foreignKeyList) {
+                if (foreignKey.getFieldName() == null) {
+                    JOptionPane.showMessageDialog(null, "请选择外键");
+                    return false;
+                }
+                if (foreignKey.getReferencedTableName() == null) {
+                    JOptionPane.showMessageDialog(null, "请选择参考表");
+                    return false;
+                }
+                if (foreignKey.getReferencedFieldName() == null) {
+                    JOptionPane.showMessageDialog(null, "请选择参考列");
+                    return false;
+                }
+                if (foreignKey.getAssociate() == null) {
+                    JOptionPane.showMessageDialog(null, "请选择外键联系");
+                    return false;
+                }
+                Boolean tag = fSet.add(foreignKey.getFieldName() + "_" + foreignKey.getReferencedTableName() + "_" + foreignKey.getReferencedFieldName() + "_" + foreignKey.getAssociate());
+                if (!tag) {
+                    JOptionPane.showMessageDialog(null, "外键联系重复，请删除");
+                    return false;
+                }
             }
         }
         return true;

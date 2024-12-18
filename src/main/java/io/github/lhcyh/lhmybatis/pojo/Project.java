@@ -21,6 +21,11 @@ public class Project implements Serializable {
         return null;
     }
 
+    /**
+     * 根据表名获取被联系的表数组
+     * @param tableName
+     * @return
+     */
     public List<Table> getAssociatedListByTableName(String tableName){
         List<Table> associatedList=new ArrayList<>();
         for(Table tableItem:tableList){
