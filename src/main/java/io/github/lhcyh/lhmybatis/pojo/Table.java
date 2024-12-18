@@ -90,6 +90,8 @@ public class Table implements Serializable {
     }
 
     public String getEntityCode(Project project){
+        System.out.println("getEntity");
+        System.out.println(name);
         List<Table> associatedList=project.getAssociatedListByTableName(name);
         if((foreignKeyList==null||foreignKeyList.size()==0)&&(associatedList.size()==0)){
             return null;
@@ -107,7 +109,9 @@ public class Table implements Serializable {
                     String doCamelName = Utils.underscoreToCamel(foreignKey.getReferencedTableName(), false);
                     String entity = "";
                     System.out.println("cTable:");
-                    System.out.println;
+                    System.out.println(name);
+                    System.out.println("tabled");
+                    System.out.println(foreignKey.getReferencedTableName());
                     if (project.getTableByName(foreignKey.getReferencedTableName()).getEntityCode(project) != null) {
                         entity = "Entity";
                         entityCodeHead += "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
@@ -138,9 +142,14 @@ public class Table implements Serializable {
             boolean iTag=false;
 
             for(ForeignKey foreignKey:table.getForeignKeyList()){
+                System.out.println("ass:");
+                System.out.println(foreignKey.getAssociate());
+                System.out.println("ta:");
+                System.out.println(table.getName());
                 if(foreignKey.getAssociate()== ForeignKey.Associate.OneToOneL){
                     continue;
                 }
+                System.out.println("pass");
                 if (table.getEntityCode(project) != null) {
                     entity = "Entity";
                     iPackage= "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";

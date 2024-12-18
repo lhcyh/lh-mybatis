@@ -1,53 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.mapper.WebsiteMapper">
-    <insert id="addWebsite" useGeneratedKey="true" keyProperty="id" parameterType="com.example.demo.pojo.Website">
-         insert into `website`(`url`,`status`,`is_public`,`is_sensitive`,`name`,`note`,`type_id`,`user_id`) values(#{url},#{status},#{isPublic},#{isSensitive},#{name},#{note},#{typeId},#{userId})
+<mapper namespace="com.example.demo.mapper.UserMapper">
+    <insert id="addUser" useGeneratedKey="true" keyProperty="id" parameterType="com.example.demo.pojo.User">
+         insert into `user`(`account`,`password`,`role`) values(#{account},#{password},#{role})
     </insert>
 
-    <delete id="deleteWebsiteById">
-         delete from `website` where id=#{id}
+    <delete id="deleteUserById">
+         delete from `user` where id=#{id}
     </delete>
 
-    <update id="updateWebsite" parameterType="com.example.demo.pojo.Website">
-        update `website`
+    <update id="updateUser" parameterType="com.example.demo.pojo.User">
+        update `user`
         <set>
-            <if test="url!=null">
-               `url`=#{url},
+            <if test="account!=null">
+               `account`=#{account},
             </if>
-            <if test="status!=null">
-               `status`=#{status},
+            <if test="password!=null">
+               `password`=#{password},
             </if>
-            <if test="isPublic!=null">
-               `is_public`=#{isPublic},
-            </if>
-            <if test="isSensitive!=null">
-               `is_sensitive`=#{isSensitive},
-            </if>
-            <if test="name!=null">
-               `name`=#{name},
-            </if>
-            <if test="note!=null">
-               `note`=#{note},
-            </if>
-            <if test="typeId!=null">
-               `type_id`=#{typeId},
-            </if>
-            <if test="userId!=null">
-               `user_id`=#{userId},
+            <if test="role!=null">
+               `role`=#{role},
             </if>
         </set>
         where id=#{id}
     </update>
 
+    <resultMap id="baseMap" type="com.example.demo.entity.UserEntity">
+        <id property="id" column="id"/>
+        <collection fetchType="lazy" property="websiteList" column="id" select="com.example.demo.mapper.WebsiteMapper.getWebsiteListByUserId"/>
+    </resultMap>
 
-    <select id="getWebsiteById" resultType="com.example.demo.pojo.Website" >
-        select * from `website` where `id`=#{id}
+    <select id="getUserById" resultMap="baseMap" >
+        select * from `user` where `id`=#{id}
     </select>
 
-    <select id="getWebsiteListByUserId"  resultType="com.example.demo.pojo.Website" >
-        select * from `website` where user_id=#{userId}
-    </select>
 
     <sql id="exampleClause">
         <foreach collection="leftJoinList" item="joinInfo">
@@ -90,8 +76,8 @@
         </if>
     </sql>
 
-    <select id="getWebsiteListByExample" parameterType="io.github.lhcyh.lhmybatis.Example"  resultType="com.example.demo.pojo.Website" >
-        select * from `website`
+    <select id="getUserListByExample" parameterType="io.github.lhcyh.lhmybatis.Example"  resultMap="baseMap" >
+        select * from `user`
         <include refid="exampleClause"></include>
     </select>
 
