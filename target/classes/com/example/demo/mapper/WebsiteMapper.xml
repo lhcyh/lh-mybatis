@@ -40,12 +40,17 @@
         where id=#{id}
     </update>
 
+    <resultMap id="baseMap" type="com.example.demo.entity.WebsiteEntity">
+        <id property="id" column="id"/>
+        <result property="typeId" column="type_id"/>
+        <association fetchType="lazy" property="websiteType" column="type_id" select="com.example.demo.mapper.WebsiteTypeMapper.getWebsiteTypeById"/>
+    </resultMap>
 
-    <select id="getWebsiteById" resultType="com.example.demo.pojo.Website" >
+    <select id="getWebsiteById" resultMap="baseMap" >
         select * from `website` where `id`=#{id}
     </select>
 
-    <select id="getWebsiteListByUserId"  resultType="com.example.demo.pojo.Website" >
+    <select id="getWebsiteListByUserId"  resultMap="baseMap" >
         select * from `website` where user_id=#{userId}
     </select>
 
@@ -90,7 +95,7 @@
         </if>
     </sql>
 
-    <select id="getWebsiteListByExample" parameterType="io.github.lhcyh.lhmybatis.Example"  resultType="com.example.demo.pojo.Website" >
+    <select id="getWebsiteListByExample" parameterType="io.github.lhcyh.lhmybatis.Example"  resultMap="baseMap" >
         select * from `website`
         <include refid="exampleClause"></include>
     </select>

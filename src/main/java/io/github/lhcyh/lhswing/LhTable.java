@@ -97,7 +97,7 @@ public class LhTable extends LhDiv {
                 index++;
             }
         }catch (Exception e){
-            System.out.println("e");
+            System.out.println(e);
         }
 
     }

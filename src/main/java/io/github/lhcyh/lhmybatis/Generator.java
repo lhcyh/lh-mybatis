@@ -434,7 +434,7 @@ public class Generator{
             buttonGroup.add(radio);
             content.add(radio);
             if(foreignKey.getFieldName()!=null){
-                if(foreignKey.getFieldName().equals(field.getName())){
+                if(foreignKey.getReferencedFieldName().equals(field.getName())){
                     radio.setSelected(true);
                 }
             }
@@ -538,6 +538,12 @@ public class Generator{
         if(foreignKey.getReferencedTableName()!=null){
             ckb.setText(foreignKey.getReferencedTableName());
             ckl.setEnabled(true);
+            ckl.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    createSelectRFieldDialog(profile.getProject().getTableByName(ckb.getText()).getFieldList(),foreignKey,ckl);
+                }
+            });
         }
         newRow.addComponent(ckb);
 
