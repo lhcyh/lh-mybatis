@@ -1,5 +1,7 @@
 package io.github.lhcyh.lhmybatis.pojo;
 
+import io.github.lhcyh.lhmybatis.utils.Project;
+
 import java.io.Serializable;
 
 public class Profile implements Serializable {

@@ -1,8 +1,5 @@
 package io.github.lhcyh.lhmybatis.utils;
 
-import io.github.lhcyh.lhmybatis.pojo.Field;
-import io.github.lhcyh.lhmybatis.pojo.Table;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -92,8 +89,8 @@ public class Utils {
         }
     }
 
-    public static List<Table> getTableList(Connection connection){
-        List<Table> tableList=new ArrayList<>();
+    public static List<TableHandle> getTableList(Connection connection){
+        List<TableHandle> tableList=new ArrayList<>();
         Statement statement= null;
         try {
             statement = connection.createStatement();
@@ -112,7 +109,7 @@ public class Utils {
             try {
 //                System.out.println(resultSet.getString(1));
                 //tableList.add(resultSet.getString(1));
-                Table table=new Table();
+                TableHandle table=new TableHandle();
                 table.setName(resultSet.getString(1));
                 List<Field> fileList=getFieldList(connection,table.getName());
                 table.setFieldList(fileList);

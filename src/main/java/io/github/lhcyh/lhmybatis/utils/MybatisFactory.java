@@ -1,9 +1,7 @@
 package io.github.lhcyh.lhmybatis.utils;
 
 import io.github.lhcyh.lhmybatis.pojo.CodeFile;
-import io.github.lhcyh.lhmybatis.pojo.Project;
 import io.github.lhcyh.lhmybatis.pojo.ProjectCode;
-import io.github.lhcyh.lhmybatis.pojo.Table;
 
 public class MybatisFactory {
     private Project project;
@@ -15,7 +13,7 @@ public class MybatisFactory {
 
     private void generateCode(){
         this.projectCode=new ProjectCode();
-        for(Table table:project.getTableList()){
+        for(TableHandle table:project.getTableList()){
             CodeFile pojoCodeFile=new CodeFile();
             pojoCodeFile.setName(table.getFileName(""));
             pojoCodeFile.setCode(table.getPojoCode(project));

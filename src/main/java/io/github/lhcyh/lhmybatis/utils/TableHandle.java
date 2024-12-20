@@ -1,11 +1,11 @@
-package io.github.lhcyh.lhmybatis.pojo;
+package io.github.lhcyh.lhmybatis.utils;
 
-import io.github.lhcyh.lhmybatis.utils.Utils;
+import io.github.lhcyh.lhmybatis.pojo.ForeignKey;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class Table implements Serializable {
+public class TableHandle implements Serializable {
     private String name;
     private List<Field> fieldList;
     private List<ForeignKey> foreignKeyList;
@@ -90,7 +90,7 @@ public class Table implements Serializable {
     }
 
     public String getEntityCode(Project project){
-        List<Table> associatedList=project.getAssociatedListByTableName(name);
+        List<TableHandle> associatedList=project.getAssociatedListByTableName(name);
         if((foreignKeyList==null||foreignKeyList.size()==0)&&(associatedList.size()==0)){
             return null;
         }
@@ -126,7 +126,7 @@ public class Table implements Serializable {
             }
         }
 
-        for (Table table : associatedList) {
+        for (TableHandle table : associatedList) {
             String upCamelName = Utils.underscoreToCamel(table.getName(), true);
             String doCamelName = Utils.underscoreToCamel(table.getName(), false);
             String entity = "";
@@ -429,8 +429,8 @@ public class Table implements Serializable {
 
             }
         }
-        List<Table> associatedList=project.getAssociatedListByTableName(name);
-        for(Table tableItem:associatedList){
+        List<TableHandle> associatedList=project.getAssociatedListByTableName(name);
+        for(TableHandle tableItem:associatedList){
 //            ForeignKey associateForeignKey=tableItem.getAssociateForeignKeyByTableName(name);
             String tUpName= Utils.underscoreToCamel(tableItem.getName(),true);
             String tDoName= Utils.underscoreToCamel(tableItem.getName(),false);

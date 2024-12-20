@@ -1,8 +1,7 @@
 package io.github.lhcyh.lhmybatis;
 
 import io.github.lhcyh.lhmybatis.pojo.*;
-import io.github.lhcyh.lhmybatis.utils.MybatisFactory;
-import io.github.lhcyh.lhmybatis.utils.Utils;
+import io.github.lhcyh.lhmybatis.utils.*;
 import io.github.lhcyh.lhswing.*;
 
 import javax.swing.*;
@@ -196,24 +195,24 @@ public class Generator{
             project=new Project();
             profile.setProject(project);
         }
-        List<Table> tableList=project.getTableList();
+        List<TableHandle> tableList=project.getTableList();
         if(tableList==null){
             tableList=new ArrayList<>();
             project.setTableList(tableList);
         }
-        List<Table> dTableList= Utils.getTableList(this.connection);
+        List<TableHandle> dTableList= Utils.getTableList(this.connection);
         /** 将保存的表的外键联系赋值给新的表 **/
-        for(Table table:tableList){
-            for(Table dTable:dTableList){
+        for(TableHandle table:tableList){
+            for(TableHandle dTable:dTableList){
                 if(table.getName().equals(dTable.getName())){
                     dTable.setForeignKeyList(table.getForeignKeyList());
                 }
             }
         }
 
-        List<Table> tempTableList=new ArrayList<>();
+        List<TableHandle> tempTableList=new ArrayList<>();
         List<LhCheckBox> checkBoxList=new ArrayList<>();
-        for(Table table:dTableList){
+        for(TableHandle table:dTableList){
             LhCheckBox cTable=new LhCheckBox(table.getName());
             cTable.setFontSize(tSize3);
             checkBoxList.add(cTable);
@@ -229,7 +228,7 @@ public class Generator{
                     }
                 }
             });
-            for(Table pTable:tableList){
+            for(TableHandle pTable:tableList){
                 if(pTable.getName().equals(table.getName())){
                     //tempTableList.add(table);
                     cTable.setSelected(true);
@@ -299,15 +298,15 @@ public class Generator{
      * @param foreignKey
      * @param clickButton
      */
-    private void createSelectRTableDialog(Table exTable, List<Table> tableList, ForeignKey foreignKey, LhButton clickButton, LhButton selectRFieldButton){
+    private void createSelectRTableDialog(TableHandle exTable, List<TableHandle> tableList, ForeignKey foreignKey, LhButton clickButton, LhButton selectRFieldButton){
         LhDialog dialog=new LhDialog(this.lhBody,"选择参考表");
         LhButton confirm=new LhButton("确定");
         confirm.setFontSize(tSize3);
         LhDiv content=initSelectDialog(dialog,confirm);
 
-        Table sTable=new Table();
+        TableHandle sTable=new TableHandle();
         ButtonGroup buttonGroup=new ButtonGroup();
-        for(Table table:tableList){
+        for(TableHandle table:tableList){
             if(table==exTable){
                 continue;
             }
@@ -508,7 +507,7 @@ public class Generator{
         dialog.setVisible(true);
     }
 
-    private void addRowByForeignKey(ForeignKey foreignKey,LhTable lhTable,Table tableData,List<Table> tableList){
+    private void addRowByForeignKey(ForeignKey foreignKey,LhTable lhTable,TableHandle tableData,List<TableHandle> tableList){
         LhRow newRow=lhTable.addRow();
         //tableData.getForeignKeyList().add(foreignKey);
 
@@ -586,9 +585,9 @@ public class Generator{
         });
     }
 
-    private void createCenterContent(Table tableData,LhDiv parent){
+    private void createCenterContent(TableHandle tableData,LhDiv parent){
         //Table tableData=this.profile.getProject().getTableList().get(tableIndex);
-        List<Table> tableList=this.profile.getProject().getTableList();
+        List<TableHandle> tableList=this.profile.getProject().getTableList();
         if(tableData.getForeignKeyList()==null){
             tableData.setForeignKeyList(new ArrayList<>());
         }
@@ -790,11 +789,11 @@ public class Generator{
         center.setWidthPercent(0.4f);
         center.setHeightPercent(1f);
 
-        List<Table> tableList=this.profile.getProject().getTableList();
+        List<TableHandle> tableList=this.profile.getProject().getTableList();
         List<LhRadio> radioList=new ArrayList<>();
         for(int i=0;i<tableList.size();i++){
             int index=i;
-            Table table=tableList.get(i);
+            TableHandle table=tableList.get(i);
             LhRadio tableRadio=new LhRadio(table.getName());
             tableRadio.setFontSize(tSize3);
             buttonGroup.add(tableRadio);

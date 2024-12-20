@@ -1,4 +1,4 @@
-package io.github.lhcyh.lhmybatis.pojo;
+package io.github.lhcyh.lhmybatis.utils;
 
 import io.github.lhcyh.lhmybatis.utils.Utils;
 

@@ -1,4 +1,6 @@
-package io.github.lhcyh.lhmybatis.pojo;
+package io.github.lhcyh.lhmybatis.utils;
+
+import io.github.lhcyh.lhmybatis.pojo.ForeignKey;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,14 +8,14 @@ import java.util.List;
 
 public class Project implements Serializable {
     private String name;
-    private List<Table> tableList;
+    private List<TableHandle> tableList;
     //private String basePackage;
     private String pojoPackage;
     private String entityPackage;
     private String mapperPackage;
 
-    public Table getTableByName(String tableName){
-        for(Table table:tableList){
+    public TableHandle getTableByName(String tableName){
+        for(TableHandle table:tableList){
             if(table.getName().equals(tableName)){
                 return table;
             }
@@ -26,9 +28,9 @@ public class Project implements Serializable {
      * @param tableName
      * @return
      */
-    public List<Table> getAssociatedListByTableName(String tableName){
-        List<Table> associatedList=new ArrayList<>();
-        for(Table tableItem:tableList){
+    public List<TableHandle> getAssociatedListByTableName(String tableName){
+        List<TableHandle> associatedList=new ArrayList<>();
+        for(TableHandle tableItem:tableList){
             if(tableItem.getForeignKeyList()!=null){
                 for(ForeignKey foreignKeyItem:tableItem.getForeignKeyList()){
                     if (foreignKeyItem.getReferencedTableName().equals(tableName)) {
@@ -49,11 +51,11 @@ public class Project implements Serializable {
         this.name = name;
     }
 
-    public List<Table> getTableList() {
+    public List<TableHandle> getTableList() {
         return tableList;
     }
 
-    public void setTableList(List<Table> tableList) {
+    public void setTableList(List<TableHandle> tableList) {
         this.tableList = tableList;
     }
 
