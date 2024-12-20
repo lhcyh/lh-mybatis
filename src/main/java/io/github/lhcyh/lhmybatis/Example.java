@@ -106,7 +106,7 @@ public class Example<Model> {
      */
     private String getTableName(Class tClass){
         Class<?> iClass = getInitialClass(tClass);
-        TableName tableName=iClass.getAnnotation(TableName.class);
+        Table tableName=iClass.getAnnotation(Table.class);
         if(tableName!=null){
             return tableName.value();
         }
@@ -128,7 +128,7 @@ public class Example<Model> {
      * @return
      */
     private String getFiledName(Field field){
-        FieldName fn=field.getAnnotation(FieldName.class);
+        Column fn=field.getAnnotation(Column.class);
         if(fn!=null){
             return fn.value();
         }
