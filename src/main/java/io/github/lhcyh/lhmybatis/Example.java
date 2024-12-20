@@ -2,11 +2,6 @@ package io.github.lhcyh.lhmybatis;
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -58,20 +53,6 @@ public class Example<Model> {
         @Override
         public int hashCode() {
             return Objects.hash(leftTable, leftKey, rightTable, rightKey);
-        }
-    }
-
-    /**
-     * 排序规则
-     * ASC 正序
-     * DESC 倒序
-     */
-    public enum Order{
-        ASC("asc"),
-        DESC("desc");
-        private String value;
-        Order(String value){
-            this.value=value;
         }
     }
 
@@ -436,7 +417,7 @@ public class Example<Model> {
                 leftJoinList.add(joinInfo);
             }else {
                 Criterion criterion=createCriterion(model.getClass(),field,null);
-                criterion.setCondition(order.value);
+                criterion.setCondition(order.getValue());
                 orderBy=criterion;
                 break;
             }
@@ -716,28 +697,5 @@ public class Example<Model> {
         public void setSecondValue(Object secondValue) {
             this.secondValue = secondValue;
         }
-    }
-
-    @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface TableName{
-        String value();
-    }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface FieldName{
-        String value();
-    }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface FieldIgnore{ }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface LeftJoin{
-        String leftKey();
-        String rightKey();
     }
 }

@@ -99,21 +99,22 @@ public class Table implements Serializable {
         entityCodeHead+="import "+project.getPojoPackage()+"."+getFileName("")+";\n";
         String entityCode="@JsonIgnoreProperties(value={\"handler\"})\n";
         entityCode+="public class "+getFileName("Entity")+" extends "+getFileName("")+"{\n";
+        String lp="";
         String entityGetSet="";
         if(foreignKeyList!=null) {
             for (ForeignKey foreignKey : foreignKeyList) {
                 if (foreignKey.getAssociate() == ForeignKey.Associate.OneToOneL) {
+                    lp="import io.github.lhcyh.lhmybatis.LeftJoin;\n";
                     String upCamelName = Utils.underscoreToCamel(foreignKey.getReferencedTableName(), true);
                     String doCamelName = Utils.underscoreToCamel(foreignKey.getReferencedTableName(), false);
                     String entity = "";
                     if (project.getTableByName(foreignKey.getReferencedTableName()).getEntityCode(project) != null) {
                         entity = "Entity";
-                        entityCodeHead += "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
+//                        entityCodeHead += "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
                     } else {
                         entityCodeHead += "import " + project.getPojoPackage() + "." + upCamelName + ";\n";
                     }
-//                    entityCodeHead += "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
-//                    entityCodeHead += ";\n";
+                    entityCode += "     @LeftJoin(leftKey=\""+foreignKey.getFieldName()+"\",rightKey=\""+foreignKey.getReferencedFieldName()+"\")\n";
                     entityCode += "     private " + upCamelName + entity + " " + doCamelName + ";\n";
                     entityGetSet += "     public " + upCamelName + entity + " get" + upCamelName + "(){\n";
                     entityGetSet += "          return " + doCamelName + ";\n";
@@ -126,13 +127,10 @@ public class Table implements Serializable {
         }
 
         for (Table table : associatedList) {
-//            if(table.getAssociateForeignKeyByTableName(table.getName()).getAssociate()== ForeignKey.Associate.OneToOneL){
-//                continue;
-//            }
             String upCamelName = Utils.underscoreToCamel(table.getName(), true);
             String doCamelName = Utils.underscoreToCamel(table.getName(), false);
             String entity = "";
-            String iPackage=null;
+            String iPackage="";
             boolean iTag=false;
 
             for(ForeignKey foreignKey:table.getForeignKeyList()){
@@ -144,13 +142,14 @@ public class Table implements Serializable {
                 }
                 if (table.getEntityCode(project) != null) {
                     entity = "Entity";
-                    iPackage= "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
+//                    iPackage= "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
                 } else {
                     iPackage= "import " + project.getPojoPackage() + "." + upCamelName + ";\n";
                 }
                 iTag=true;
                 switch (foreignKey.getAssociate()) {
                     case OneToOneR:
+                        lp="import io.github.lhcyh.lhmybatis.LeftJoin;\n";
                         entityCode += "    private " + upCamelName + entity + "  " + doCamelName + ";\n";
                         entityGetSet += "    public " + upCamelName + entity + " get" + upCamelName + "(){\n";
                         entityGetSet += "        return " + doCamelName + ";\n";
@@ -174,6 +173,7 @@ public class Table implements Serializable {
                 entityCodeHead+=iPackage;
             }
         }
+        entityCodeHead+=lp;
         if(entityCode.contains("List")){
             entityCodeHead+="import java.util.List;\n";
         }
@@ -409,12 +409,13 @@ public class Table implements Serializable {
         String xml="";
         xml+=fill+"<resultMap id=\"baseMap\" type=\""+project.getEntityPackage()+"."+upName+"Entity\">\n";
         xml+=fill+"    <id property=\""+pDoName+"\" column=\""+pName+"\"/>\n";
-        for(ForeignKey foreignKeyItem:foreignKeyList){
-            if(foreignKeyItem.getAssociate()== ForeignKey.Associate.OneToOneL){
-                String fDoName= Utils.underscoreToCamel(foreignKeyItem.getFieldName(),false);
-                String rtUpName= Utils.underscoreToCamel(foreignKeyItem.getReferencedTableName(),true);
-                String rtDoName= Utils.underscoreToCamel(foreignKeyItem.getReferencedTableName(),false);
-                String rtpUpName= Utils.underscoreToCamel(project.getTableByName(foreignKeyItem.getReferencedTableName()).getPrimaryKey().getName(),true);
+        if(foreignKeyList!=null) {
+            for (ForeignKey foreignKeyItem : foreignKeyList) {
+                if (foreignKeyItem.getAssociate() == ForeignKey.Associate.OneToOneL) {
+                    String fDoName = Utils.underscoreToCamel(foreignKeyItem.getFieldName(), false);
+                    String rtUpName = Utils.underscoreToCamel(foreignKeyItem.getReferencedTableName(), true);
+                    String rtDoName = Utils.underscoreToCamel(foreignKeyItem.getReferencedTableName(), false);
+                    String rtpUpName = Utils.underscoreToCamel(project.getTableByName(foreignKeyItem.getReferencedTableName()).getPrimaryKey().getName(), true);
 //                String rtEntity=project.getTableByName(foreignKeyItem.getReferencedTableName()).getEntityCode(project);
 //                String javaType=null;
 //                if(rtEntity==null){
@@ -422,10 +423,11 @@ public class Table implements Serializable {
 //                }else {
 //                    javaType=project.getBasePackage()+".entity."+rtUpName+"Entity";
 //                }
-                xml+=fill+"    <result property=\""+fDoName+"\" column=\""+foreignKeyItem.getFieldName()+"\"/>\n";
-                xml+=fill+"    <association fetchType=\"lazy\" property=\""+rtDoName+"\" column=\""+foreignKeyItem.getFieldName()+"\" select=\""+project.getMapperPackage()+"."+rtUpName+ "Mapper."+"get"+rtUpName+"By"+rtpUpName+"\"/>\n";
-            }
+                    xml += fill + "    <result property=\"" + fDoName + "\" column=\"" + foreignKeyItem.getFieldName() + "\"/>\n";
+                    xml += fill + "    <association fetchType=\"lazy\" property=\"" + rtDoName + "\" column=\"" + foreignKeyItem.getFieldName() + "\" select=\"" + project.getMapperPackage() + "." + rtUpName + "Mapper." + "get" + rtUpName + "By" + rtpUpName + "\"/>\n";
+                }
 
+            }
         }
         List<Table> associatedList=project.getAssociatedListByTableName(name);
         for(Table tableItem:associatedList){

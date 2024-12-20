@@ -4,9 +4,6 @@ import io.github.lhcyh.lhmybatis.pojo.*;
 import io.github.lhcyh.lhmybatis.utils.MybatisFactory;
 import io.github.lhcyh.lhmybatis.utils.Utils;
 import io.github.lhcyh.lhswing.*;
-import io.github.lhcyh.lhswing.AlignItems;
-import io.github.lhcyh.lhswing.FlexDirection;
-import io.github.lhcyh.lhswing.JustifyContent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -433,7 +430,7 @@ public class Generator{
             radio.setPadding(20);
             buttonGroup.add(radio);
             content.add(radio);
-            if(foreignKey.getFieldName()!=null){
+            if(foreignKey.getReferencedFieldName()!=null){
                 if(foreignKey.getReferencedFieldName().equals(field.getName())){
                     radio.setSelected(true);
                 }
