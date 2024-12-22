@@ -935,7 +935,8 @@ public class Generator{
                 codeFileList=projectCode.getMapperXml();
                 writeCodeFile(codeFileList,submitButton,currentDir+"\\src\\main\\resources\\"+packagePath,"mapperXml");
 
-                JOptionPane.showMessageDialog(null,"已完成");
+                packagePath=profile.getProject().getMapperPackage().replace(".","/");
+                JOptionPane.showMessageDialog(null,"已完成\n请配置加载Common.xml文件\nmybatis.mapper-locations: classpath:"+packagePath+"/Common.xml");
                 submitButton.setText("提交");
                 submitButton.setEnabled(true);
                 System.out.println("success!");

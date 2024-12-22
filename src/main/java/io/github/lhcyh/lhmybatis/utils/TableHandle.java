@@ -294,7 +294,7 @@ public class TableHandle implements Serializable {
         for (Field fieldItem:fieldList){
             String lupName=Utils.underscoreToCamel(fieldItem.getName(),false);
             if(fieldItem.getIsPrimaryKey()&&fieldItem.getType()== Field.Type.INT){
-                xmlHead+=" useGeneratedKey=\"true\" keyProperty=\""+lupName+"\"";
+                xmlHead+=" useGeneratedKeys=\"true\" keyProperty=\""+lupName+"\"";
                 continue;
             }
             if(tableValue==null){
@@ -634,7 +634,7 @@ public class TableHandle implements Serializable {
         String upName= Utils.underscoreToCamel(name,true);
         String xml=fill+"<select id=\"get"+upName+"ListByExample\" parameterType=\""+"io.github.lhcyh.lhmybatis.Example\" "+getResultXml(project)+">\n";
         xml+=fill+"    select * from `"+name+"`\n";
-        xml+=fill+"    <include refid=\"exampleClause\"></include>\n";
+        xml+=fill+"    <include refid=\"Common.exampleClause\"></include>\n";
         xml+=fill+"</select>\n";
         return xml;
     }
@@ -656,7 +656,7 @@ public class TableHandle implements Serializable {
 //            xml+=leftJoin+"\n";
 //        }
 //        xml+=getExampleClause("    ",project)+"\n";
-        xml+=getExampleClause()+"\n";
+        //xml+=getExampleClause()+"\n";
         xml+=getGetListByExampleXml(project,"    ")+"\n";
         xml+="</mapper>\n";
         return  xml;
