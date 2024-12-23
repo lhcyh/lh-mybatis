@@ -1,6 +1,6 @@
-package io.github.lhcyh.lhmybatis.utils;
+package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
-import io.github.lhcyh.lhmybatis.pojo.ForeignKey;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.ForeignKey;
 
 import java.io.Serializable;
 import java.util.ArrayList;

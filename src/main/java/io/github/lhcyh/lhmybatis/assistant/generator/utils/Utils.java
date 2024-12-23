@@ -1,4 +1,4 @@
-package io.github.lhcyh.lhmybatis.utils;
+package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

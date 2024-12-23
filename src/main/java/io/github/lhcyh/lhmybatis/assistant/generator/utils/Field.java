@@ -1,6 +1,4 @@
-package io.github.lhcyh.lhmybatis.utils;
-
-import io.github.lhcyh.lhmybatis.utils.Utils;
+package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
 import java.io.Serializable;
 

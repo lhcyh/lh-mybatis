@@ -1,7 +1,7 @@
 package io.github.lhcyh.lhmybatis;
 
-import io.github.lhcyh.lhmybatis.pojo.*;
-import io.github.lhcyh.lhmybatis.utils.*;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.*;
+import io.github.lhcyh.lhmybatis.assistant.generator.utils.*;
 import io.github.lhcyh.lhswing.*;
 
 import javax.swing.*;

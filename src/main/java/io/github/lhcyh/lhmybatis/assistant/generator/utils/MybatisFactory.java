@@ -1,7 +1,7 @@
-package io.github.lhcyh.lhmybatis.utils;
+package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
-import io.github.lhcyh.lhmybatis.pojo.CodeFile;
-import io.github.lhcyh.lhmybatis.pojo.ProjectCode;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.CodeFile;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.ProjectCode;
 
 public class MybatisFactory {
     private Project project;

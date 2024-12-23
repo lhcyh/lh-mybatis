@@ -1,5 +1,9 @@
 package io.github.lhcyh.lhmybatis;
 
+import io.github.lhcyh.lhmybatis.assistant.example.Condition;
+import io.github.lhcyh.lhmybatis.assistant.example.Criterion;
+import io.github.lhcyh.lhmybatis.assistant.example.JoinInfo;
+import io.github.lhcyh.lhmybatis.assistant.example.ValueType;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import java.lang.reflect.Field;
@@ -22,39 +26,6 @@ public class Example<Model> {
     private Integer limitNum;
     /** 排序准则 **/
     private Criterion orderBy;
-
-    /**
-     * 连表信息
-     */
-    private class JoinInfo{
-        private String leftTable;
-        private String leftKey;
-        private String rightTable;
-        private String rightKey;
-
-        public JoinInfo(String leftTable, String leftKey, String rightTable, String rightKey) {
-            this.leftTable = leftTable;
-            this.leftKey = leftKey;
-            this.rightTable = rightTable;
-            this.rightKey = rightKey;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            JoinInfo joinInfo = (JoinInfo) o;
-            return leftTable.equals(joinInfo.leftTable) &&
-                    leftKey.equals(joinInfo.leftKey) &&
-                    rightTable.equals(joinInfo.rightTable) &&
-                    rightKey.equals(joinInfo.rightKey);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(leftTable, leftKey, rightTable, rightKey);
-        }
-    }
 
     public Example(){
         orCriterionList=new ArrayList<>();
@@ -281,15 +252,15 @@ public class Example<Model> {
      * @param condition
      * @return
      */
-    private Criterion createCriterion(Class tClass, Field field, Criterion.Condition condition){
+    private Criterion createCriterion(Class tClass, Field field, Condition condition){
         Criterion criterion=new Criterion();
         String tableName=getTableName(tClass);
         criterion.setTable(tableName);
         String fieldName=getFiledName(field);
         criterion.setField(fieldName);
         if(condition!=null){
-            criterion.setCondition(condition.value);
-            criterion.setValueType(condition.valueType.value);
+            criterion.setCondition(condition.getValue());
+            criterion.setValueType(condition.getValueType().getValue());
         }
         return criterion;
     }
@@ -299,8 +270,8 @@ public class Example<Model> {
      * @param model 属性值模板
      * @param condition 判断条件（单值条件或无值条件）
      */
-    private void loadCriterion(Object model, Criterion.Condition condition){
-        if(!(condition.valueType== Criterion.ValueType.NoValue||condition.valueType== Criterion.ValueType.SingleValue)){
+    private void loadCriterion(Object model, Condition condition){
+        if(!(condition.getValueType()== ValueType.NoValue||condition.getValueType()== ValueType.SingleValue)){
             new Exception("Parameter error").printStackTrace();
             return;
         }
@@ -331,8 +302,8 @@ public class Example<Model> {
      * @param modelList 属性模板列表
      * @param condition 判断条件（多值条件）
      */
-    private void loadCriterion(List<Object> modelList,Criterion.Condition condition){
-        if(!(condition.valueType== Criterion.ValueType.ListValue)){
+    private void loadCriterion(List<Object> modelList,Condition condition){
+        if(!(condition.getValueType()== ValueType.ListValue)){
             new Exception("Parameter error").printStackTrace();
             return;
         }
@@ -368,8 +339,8 @@ public class Example<Model> {
      * @param model2 属性模板2
      * @param condition 判断条件（between条件）
      */
-    private void loadCriterion(Object model1,Object model2,Criterion.Condition condition){
-        if(!(condition.valueType== Criterion.ValueType.BetweenValue)){
+    private void loadCriterion(Object model1,Object model2,Condition condition){
+        if(!(condition.getValueType()== ValueType.BetweenValue)){
             new Exception("Parameter error").printStackTrace();
             return;
         }
@@ -441,7 +412,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andIsNull(Model model){
-        loadCriterion(model, Criterion.Condition.IsNull);
+        loadCriterion(model, Condition.IsNull);
         return this;
     }
 
@@ -451,7 +422,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andIsNotNull(Model model){
-        loadCriterion(model, Criterion.Condition.IsNotNull);
+        loadCriterion(model, Condition.IsNotNull);
         return this;
     }
 
@@ -462,7 +433,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andBetween(Model model1,Model model2){
-        loadCriterion(model1,model2, Criterion.Condition.Between);
+        loadCriterion(model1,model2, Condition.Between);
         return this;
     }
 
@@ -472,7 +443,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andEqualTo(Model model){
-        loadCriterion(model, Criterion.Condition.EqualTo);
+        loadCriterion(model, Condition.EqualTo);
         return this;
     }
 
@@ -482,7 +453,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andNotEqualTo(Model model){
-        loadCriterion(model, Criterion.Condition.NotEqualTo);
+        loadCriterion(model, Condition.NotEqualTo);
         return this;
     }
 
@@ -492,7 +463,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andGreaterThan(Model model){
-        loadCriterion(model, Criterion.Condition.GreaterThan);
+        loadCriterion(model, Condition.GreaterThan);
         return this;
     }
 
@@ -502,7 +473,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andLessThan(Model model){
-        loadCriterion(model, Criterion.Condition.LessThan);
+        loadCriterion(model, Condition.LessThan);
         return this;
     }
 
@@ -512,7 +483,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andLessThanOrEqualTo(Model model){
-        loadCriterion(model, Criterion.Condition.LessThanOrEqualTo);
+        loadCriterion(model, Condition.LessThanOrEqualTo);
         return this;
     }
 
@@ -522,7 +493,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andLike(Model model){
-        loadCriterion(model, Criterion.Condition.Like);
+        loadCriterion(model, Condition.Like);
         return this;
     }
 
@@ -532,7 +503,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andNotLike(Model model){
-        loadCriterion(model, Criterion.Condition.NotLike);
+        loadCriterion(model, Condition.NotLike);
         return this;
     }
 
@@ -542,7 +513,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andIn(List<Model> modelList){
-        loadCriterion((List<Object>) modelList, Criterion.Condition.In);
+        loadCriterion((List<Object>) modelList, Condition.In);
         return this;
     }
 
@@ -610,92 +581,4 @@ public class Example<Model> {
         return orderBy;
     }
 
-    /**
-     * 准则
-     */
-    public static class Criterion{
-        enum ValueType{
-            NoValue("noValue"),
-            SingleValue("singleValue"),
-            BetweenValue("betweenValue"),
-            ListValue("listValue");
-            private String value;
-            ValueType(String value){
-                this.value=value;
-            }
-        }
-        enum Condition{
-            EqualTo("=", ValueType.SingleValue),
-            NotEqualTo("!=", ValueType.SingleValue),
-            GreaterThan(">", ValueType.SingleValue),
-            LessThan("<", ValueType.SingleValue),
-            LessThanOrEqualTo("<=", ValueType.SingleValue),
-            Between("between", ValueType.BetweenValue),
-            IsNull("is null", ValueType.NoValue),
-            IsNotNull("is not null", ValueType.NoValue),
-            Like("like", ValueType.SingleValue),
-            NotLike("not like", ValueType.SingleValue),
-            In("in", ValueType.ListValue);
-            private String value;
-            private ValueType valueType;
-            Condition(String value,ValueType valueType){
-                this.value=value;
-                this.valueType=valueType;
-            }
-        }
-        private String table;
-        private String field;
-        private Object value;
-        private Object secondValue;
-        private String valueType;
-        private String condition;
-
-        public String getTable() {
-            return table;
-        }
-
-        public void setTable(String table) {
-            this.table = table;
-        }
-
-        public String getField() {
-            return field;
-        }
-
-        public void setField(String field) {
-            this.field = field;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
-        public String getValueType() {
-            return valueType;
-        }
-
-        public void setValueType(String valueType) {
-            this.valueType = valueType;
-        }
-
-        public String getCondition() {
-            return condition;
-        }
-
-        public void setCondition(String condition) {
-            this.condition = condition;
-        }
-
-        public Object getSecondValue() {
-            return secondValue;
-        }
-
-        public void setSecondValue(Object secondValue) {
-            this.secondValue = secondValue;
-        }
-    }
 }
