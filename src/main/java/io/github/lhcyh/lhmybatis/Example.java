@@ -519,12 +519,12 @@ public class Example<Model> {
 
     /**
      * 限制查询范围
-     * @param start limit参数表示从第几行开始看，起始数为0
+     * @param num 返回查询结果的前 num 条记录
      * @return
      */
-    public Example<Model> limit(Integer start){
-        this.limitStart=start;
-        this.limitNum=null;
+    public Example<Model> limit(Integer num){
+        this.limitStart=null;
+        this.limitNum=num;
         return this;
     }
 
@@ -535,6 +535,9 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> limit(Integer start,Integer num){
+        if(num==null){
+            return this;
+        }
         this.limitStart=start;
         this.limitNum=num;
         return this;

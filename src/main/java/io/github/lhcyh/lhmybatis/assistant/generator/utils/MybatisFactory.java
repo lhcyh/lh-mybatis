@@ -94,10 +94,10 @@ public class MybatisFactory {
                 "            order by ${orderBy.table}.${orderBy.field} ${orderBy.condition}\n" +
                 "        </if>\n" +
                 "        <if test=\"limitStart!=null\">\n" +
-                "            limit #{limitStart}\n" +
-                "            <if test=\"limitNum!=null\">\n" +
-                "                ,#{limitNum}\n" +
-                "            </if>\n" +
+                "            limit #{limitStart},\n" +
+                "        </if>\n" +
+                "        <if test=\"limitNum!=null\">\n" +
+                "            #{limitNum}\n" +
                 "        </if>\n" +
                 "    </sql>\n" +
                 "\n" +
