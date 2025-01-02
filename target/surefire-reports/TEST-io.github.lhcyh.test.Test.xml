@@ -48,7 +48,7 @@
     <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="C:\Users\chenyihang\.jdks\liberica-1.8.0_345\jre"/>
-    <property name="sun.java.command" value="org.codehaus.classworlds.Launcher -Didea.version2020.1 -s D:\cyh\software\install_location\javaEE\apache-maven-3.8.4\conf\settings.xml -Dmaven.repo.local=D:\cyh\software\install_location\javaEE\myrepository deploy -P release"/>
+    <property name="sun.java.command" value="org.codehaus.classworlds.Launcher -Didea.version2020.1 -s D:\cyh\software\install_location\javaEE\apache-maven-3.8.4\conf\settings.xml -Dmaven.repo.local=D:\cyh\software\install_location\javaEE\myrepository install -P release"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="zh"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
