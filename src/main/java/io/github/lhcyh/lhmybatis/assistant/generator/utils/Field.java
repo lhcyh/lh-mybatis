@@ -1,32 +1,34 @@
 package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
+import io.github.lhcyh.lhmybatis.assistant.generator.enums.Type;
+
 import java.io.Serializable;
 
 public class Field implements Serializable {
-    public enum Type{
-        VARCHAR("varchar"),
-        INT("int"),
-        DATETIME("datetime"),
-        FLOAT("float"),
-        BIT("bit"),
-        ENUM("enum");
-        private String value;
-        Type(String value){
-            this.value=value;
-        }
-        public String getValue(){
-            return this.value;
-        }
-
-        public static Type getTypeByValue(String value){
-            for(Type type: Type.values()){
-                if(type.value.equals(value)){
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
+//    public enum Type{
+//        VARCHAR("varchar"),
+//        INT("int"),
+//        DATETIME("datetime"),
+//        FLOAT("float"),
+//        BIT("bit"),
+//        ENUM("enum");
+//        private String value;
+//        Type(String value){
+//            this.value=value;
+//        }
+//        public String getValue(){
+//            return this.value;
+//        }
+//
+//        public static Type getTypeByValue(String value){
+//            for(Type type: Type.values()){
+//                if(type.value.equals(value)){
+//                    return type;
+//                }
+//            }
+//            return null;
+//        }
+//    }
     private String name;
     private Type type;
     private Integer size;
@@ -35,21 +37,26 @@ public class Field implements Serializable {
     private boolean isPrimaryKey;
 
     public String getJavaType(){
-        switch (type){
-            case VARCHAR:
-                return "String";
-            case INT:
-                return "Integer";
-            case BIT:
-                return "Boolean";
-            case FLOAT:
-                return "Float";
-            case DATETIME:
-                return "Date";
-            case ENUM:
-                return Utils.underscoreToCamel(name,true);
+//        switch (type){
+//            case VARCHAR:
+//                return "String";
+//            case INT:
+//                return "Integer";
+//            case BIT:
+//                return "Boolean";
+//            case FLOAT:
+//                return "Float";
+//            case DATETIME:
+//                return "Date";
+//            case ENUM:
+//                return Utils.underscoreToCamel(name,true);
+//        }
+//        return null;
+        if(type==Type.ENUM){
+            return Utils.underscoreToCamel(name,true);
+        }else {
+            return type.getJavaType();
         }
-        return null;
     }
 
     public String getIfTag(String fill){

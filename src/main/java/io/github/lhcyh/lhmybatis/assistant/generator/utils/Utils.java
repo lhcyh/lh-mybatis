@@ -1,5 +1,7 @@
 package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
+import io.github.lhcyh.lhmybatis.assistant.generator.enums.Type;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -169,7 +171,7 @@ public class Utils {
         return null;
     }
 
-    private static Field.Type getType(String value){
+    private static Type getType(String value){
         String typeString="";
         for(int i=0;i<value.length();i++){
             if(value.charAt(i)=='('){
@@ -178,7 +180,7 @@ public class Utils {
                 typeString+=value.charAt(i);
             }
         }
-        return Field.Type.getTypeByValue(typeString);
+        return Type.getTypeByMysqlTypeValue(typeString);
     }
 
     public static List<Field> getFieldList(Connection connection,String table){
