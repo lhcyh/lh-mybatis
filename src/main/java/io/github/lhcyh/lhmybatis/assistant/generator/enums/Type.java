@@ -2,17 +2,22 @@ package io.github.lhcyh.lhmybatis.assistant.generator.enums;
 
 public enum Type {
     VARCHAR("varchar","String"),
+    CHAR("char","String"),
+    TEXT("text","String"),
+    LONGTEXT("longtext","String"),
+    MEDIUMTEXT("mediumtext","String"),
     INT("int","Integer"),
+    BIGINT("bigint","Long"),
+    TINYINT("tinyint","Integer"),
     DATETIME("datetime","Date"),
     FLOAT("float","Float"),
     BIT("bit","Boolean"),
     ENUM("enum",null),
-    LONGTEXT("longtext","String"),
-    TINYINT("tinyint","Integer"),
-    TIMESTAMP("timestamp","Date");
+    TIMESTAMP("timestamp","Date"),
+    DECIMAL("decimal","BigDecimal");
     private String mysqlType;
     private String javaType;
-    Type(String mysqlType,String javaType){
+    Type(String mysqlType, String javaType){
         this.mysqlType=mysqlType;
         this.javaType=javaType;
     }
