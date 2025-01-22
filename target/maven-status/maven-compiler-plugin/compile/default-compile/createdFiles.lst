@@ -1,5 +1,6 @@
 io\github\lhcyh\lhmybatis\assistant\generator\utils\Utils.class
 io\github\lhcyh\lhmybatis\Generator$2.class
+io\github\lhcyh\lhmybatis\assistant\generator\enums\Type.class
 io\github\lhcyh\lhmybatis\Generator$13.class
 io\github\lhcyh\lhmybatis\Generator$11.class
 io\github\lhcyh\lhmybatis\Generator$21.class
@@ -22,7 +23,6 @@ io\github\lhcyh\lhmybatis\Generator$3.class
 io\github\lhcyh\lhmybatis\Generator$18.class
 io\github\lhcyh\lhmybatis\Generator$20.class
 io\github\lhcyh\lhmybatis\FieldIgnore.class
-io\github\lhcyh\lhmybatis\assistant\generator\utils\Field$Type.class
 io\github\lhcyh\lhmybatis\Generator$19.class
 io\github\lhcyh\lhmybatis\Generator$1.class
 io\github\lhcyh\lhmybatis\assistant\example\JoinInfo.class
@@ -38,7 +38,6 @@ io\github\lhcyh\lhmybatis\Generator$6$1.class
 io\github\lhcyh\lhmybatis\Generator$4.class
 io\github\lhcyh\lhmybatis\Order.class
 io\github\lhcyh\lhmybatis\assistant\generator\utils\TableHandle$1.class
-io\github\lhcyh\lhmybatis\assistant\generator\utils\Field$1.class
 io\github\lhcyh\lhmybatis\assistant\generator\utils\MybatisFactory.class
 io\github\lhcyh\lhmybatis\Example.class
 io\github\lhcyh\lhmybatis\assistant\generator\pojo\ForeignKey.class

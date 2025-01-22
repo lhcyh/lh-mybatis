@@ -1,4 +1,5 @@
 io.github.lhcyh.lhmybatis
 io.github.lhcyh.lhmybatis.assistant.example
+io.github.lhcyh.lhmybatis.assistant.generator.enums
 io.github.lhcyh.lhmybatis.assistant.generator.pojo
 io.github.lhcyh.lhmybatis.assistant.generator.utils
