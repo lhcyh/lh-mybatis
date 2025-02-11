@@ -25,27 +25,6 @@ public class Utils {
         return camel;
     }
 
-//    private static Connection getConnection(String url,String user,String password){
-//        Connection connection = null;
-//        try {
-//            //connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lhhomepage?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8", "root","123418abc");//连接数据库
-//            connection = DriverManager.getConnection(url, user,password);//连接数据库
-//        } catch(SQLException e){
-//            e.printStackTrace();
-//        }
-//        return connection;
-//    }
-
-//    private static Statement getStatement(Connection connection){
-//        Statement statement = null;
-//        try {
-//            statement = connection.createStatement();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return statement;
-//    }
-
     private static ResultSet executeQuery(Statement statement, String sql){
         ResultSet rs = null;
         try {
@@ -205,41 +184,4 @@ public class Utils {
         }
         return fieldList;
     }
-//    public static String getPropertyByTableName(String tableName,String fill){
-//        String property=fill+"private "+underscoreToCamel(tableName,true)+" "+underscoreToCamel(tableName,false)+";";
-//        return property;
-//    }
-//
-//    public static String getListPropertyByTableName(String tableName,String fill){
-//        String listProperty=fill+"private List<"+underscoreToCamel(tableName,true)+"> "+underscoreToCamel(tableName,false)+";";
-//        return listProperty;
-//    }
-//
-//    public static String getJavaGetByTableName(String tableName,String fill){
-//        String javaGet=fill+"public "+underscoreToCamel(tableName,true)+" get"+underscoreToCamel(tableName,true)+"(){\n";
-//        javaGet+=fill+"  return "+underscoreToCamel(tableName,false)+";";
-//        javaGet+=fill+"}";
-//        return javaGet;
-//    }
-//
-//    public static String getJavaListGetByTableName(String tableName,String fill){
-//        String javaList=fill+"public List<"+underscoreToCamel(tableName,true)+"> get"+underscoreToCamel(tableName,true)+"List(){\n";
-//        javaList+=fill+"    return "+underscoreToCamel(tableName,false)+";\n";
-//        javaList+=fill+"}";
-//        return javaList;
-//    }
-//
-//    public static String getJavaSetByTableName(String tableName,String fill){
-//        String javaSet=fill+"public void set"+underscoreToCamel(tableName,true)+"("+underscoreToCamel(tableName,true)+" "+underscoreToCamel(tableName,false)+"){\n";
-//        javaSet+=fill+"   return "+underscoreToCamel(tableName,false)+";\n";
-//        javaSet+=fill+"}";
-//        return javaSet;
-//    }
-//
-//    public static String getJavaListSetByTableName(String tableName,String fill){
-//        String javaListSet=fill+"public void set"+underscoreToCamel(tableName,true)+"List("+underscoreToCamel(tableName,true)+" "+underscoreToCamel(tableName,false)+"){\n";
-//        javaListSet+=fill+"   return "+underscoreToCamel(tableName,false)+"List;\n";
-//        javaListSet+=fill+"}";
-//        return javaListSet;
-//    }
 }
