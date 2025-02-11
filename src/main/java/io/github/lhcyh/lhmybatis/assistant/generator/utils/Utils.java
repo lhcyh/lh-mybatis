@@ -180,6 +180,7 @@ public class Utils {
                 typeString+=value.charAt(i);
             }
         }
+        typeString=typeString.replaceAll("\\s.*", ""); // 删除第一个空格及其后的所有内容
         return Type.getTypeByMysqlTypeValue(typeString);
     }
 
