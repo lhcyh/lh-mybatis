@@ -11,6 +11,7 @@ public enum Type {
     TINYINT("tinyint","Integer"),
     DATETIME("datetime","Date"),
     FLOAT("float","Float"),
+    DOUBLE("double","Double"),
     BIT("bit","Boolean"),
     ENUM("enum",null),
     TIMESTAMP("timestamp","Date"),
