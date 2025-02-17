@@ -1,4 +1,4 @@
-package io.github.lhcyh.lhmybatis.pojo;
+package io.github.lhcyh.lhmybatis.assistant.generator.pojo;
 
 import java.io.Serializable;
 

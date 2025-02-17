@@ -1,7 +1,7 @@
-package io.github.lhcyh.lhmybatis.utils;
+package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
-import io.github.lhcyh.lhmybatis.pojo.CodeFile;
-import io.github.lhcyh.lhmybatis.pojo.ProjectCode;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.CodeFile;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.ProjectCode;
 
 public class MybatisFactory {
     private Project project;
@@ -93,11 +93,12 @@ public class MybatisFactory {
                 "        <if test=\"orderBy!=null\">\n" +
                 "            order by ${orderBy.table}.${orderBy.field} ${orderBy.condition}\n" +
                 "        </if>\n" +
-                "        <if test=\"limitStart!=null\">\n" +
-                "            limit #{limitStart}\n" +
-                "            <if test=\"limitNum!=null\">\n" +
-                "                ,#{limitNum}\n" +
+                "        <if test=\"limitNum!=null\">\n" +
+                "            limit\n"+
+                "            <if test=\"limitStart!=null\">\n" +
+                "                 #{limitStart},\n" +
                 "            </if>\n" +
+                "            #{limitNum}\n" +
                 "        </if>\n" +
                 "    </sql>\n" +
                 "\n" +

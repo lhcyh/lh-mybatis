@@ -1,6 +1,7 @@
-package io.github.lhcyh.lhmybatis.utils;
+package io.github.lhcyh.lhmybatis.assistant.generator.utils;
 
-import io.github.lhcyh.lhmybatis.pojo.ForeignKey;
+import io.github.lhcyh.lhmybatis.assistant.generator.enums.Type;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.ForeignKey;
 
 import java.io.Serializable;
 import java.util.List;
@@ -293,7 +294,7 @@ public class TableHandle implements Serializable {
         String beanValue=null;
         for (Field fieldItem:fieldList){
             String lupName=Utils.underscoreToCamel(fieldItem.getName(),false);
-            if(fieldItem.getIsPrimaryKey()&&fieldItem.getType()== Field.Type.INT){
+            if(fieldItem.getIsPrimaryKey()&&fieldItem.getType()== Type.INT){
                 xmlHead+=" useGeneratedKeys=\"true\" keyProperty=\""+lupName+"\"";
                 continue;
             }
