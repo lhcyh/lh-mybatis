@@ -115,14 +115,14 @@ public class TableHandle implements Serializable {
                     } else {
                         entityCodeHead += "import " + project.getPojoPackage() + "." + upCamelName + ";\n";
                     }
-                    entityCode += "     @LeftJoin(leftKey=\""+foreignKey.getFieldName()+"\",rightKey=\""+foreignKey.getReferencedFieldName()+"\")\n";
-                    entityCode += "     private " + upCamelName + entity + " " + doCamelName + ";\n";
-                    entityGetSet += "     public " + upCamelName + entity + " get" + upCamelName + "(){\n";
-                    entityGetSet += "          return " + doCamelName + ";\n";
-                    entityGetSet += "     }\n\n";
-                    entityGetSet += "     public void set" + upCamelName + "(" + upCamelName + entity + " " + doCamelName + "){\n";
-                    entityGetSet += "          this." + doCamelName + "=" + doCamelName + ";\n";
-                    entityGetSet += "     }\n\n";
+                    entityCode += "    @LeftJoin(leftKey=\""+foreignKey.getFieldName()+"\",rightKey=\""+foreignKey.getReferencedFieldName()+"\")\n";
+                    entityCode += "    private " + upCamelName + entity + " " + doCamelName + ";\n";
+                    entityGetSet += "    public " + upCamelName + entity + " get" + upCamelName + "(){\n";
+                    entityGetSet += "        return " + doCamelName + ";\n";
+                    entityGetSet += "    }\n\n";
+                    entityGetSet += "    public void set" + upCamelName + "(" + upCamelName + entity + " " + doCamelName + "){\n";
+                    entityGetSet += "        this." + doCamelName + "=" + doCamelName + ";\n";
+                    entityGetSet += "    }\n\n";
                 }
             }
         }
@@ -160,7 +160,7 @@ public class TableHandle implements Serializable {
                         entityGetSet += "    }\n\n";
                         break;
                     case ManyToOne:
-                        entityCode += "    private " + "List<" + upCamelName + entity + ">  " + doCamelName + "List;\n";
+                        entityCode += "    private " + "List<" + upCamelName + entity + "> " + doCamelName + "List;\n";
                         entityGetSet += "    public " + "List<" + upCamelName + entity + "> get" + upCamelName + "List(){\n";
                         entityGetSet += "        return " + doCamelName + "List;\n";
                         entityGetSet += "    }\n\n";
@@ -289,7 +289,7 @@ public class TableHandle implements Serializable {
         String upName= Utils.underscoreToCamel(name,true);
         String xmlHead=fill+"<insert id=\"add"+upName+"\"";
         String xml=" parameterType=\""+packageName+"."+upName+"\">\n";
-        xml+=fill+"     insert into `"+name+"`(";
+        xml+=fill+"    insert into `"+name+"`(";
         String tableValue=null;
         String beanValue=null;
         for (Field fieldItem:fieldList){
@@ -318,7 +318,7 @@ public class TableHandle implements Serializable {
         String pUpName= Utils.underscoreToCamel(pKeyName,true);
         String upName= Utils.underscoreToCamel(name,true);
         String xml=fill+"<delete id=\"delete"+upName+"By"+pUpName+"\">\n";
-        xml+=fill+"     delete from `"+name+"` where "+pKeyName+"=#{"+pDoName+"}\n";
+        xml+=fill+"    delete from `"+name+"` where "+pKeyName+"=#{"+pDoName+"}\n";
         xml+=fill+"</delete>\n";
         return xml;
     }
@@ -411,6 +411,8 @@ public class TableHandle implements Serializable {
         xml+=fill+"<resultMap id=\"baseMap\" type=\""+project.getEntityPackage()+"."+upName+"Entity\">\n";
         xml+=fill+"    <id property=\""+pDoName+"\" column=\""+pName+"\"/>\n";
         if(foreignKeyList!=null) {
+            String result="";
+            String association="";
             for (ForeignKey foreignKeyItem : foreignKeyList) {
                 if (foreignKeyItem.getAssociate() == ForeignKey.Associate.OneToOneL) {
                     String fDoName = Utils.underscoreToCamel(foreignKeyItem.getFieldName(), false);
@@ -424,11 +426,13 @@ public class TableHandle implements Serializable {
 //                }else {
 //                    javaType=project.getBasePackage()+".entity."+rtUpName+"Entity";
 //                }
-                    xml += fill + "    <result property=\"" + fDoName + "\" column=\"" + foreignKeyItem.getFieldName() + "\"/>\n";
-                    xml += fill + "    <association fetchType=\"lazy\" property=\"" + rtDoName + "\" column=\"" + foreignKeyItem.getFieldName() + "\" select=\"" + project.getMapperPackage() + "." + rtUpName + "Mapper." + "get" + rtUpName + "By" + rtpUpName + "\"/>\n";
+                    result += fill + "    <result property=\"" + fDoName + "\" column=\"" + foreignKeyItem.getFieldName() + "\"/>\n";
+                    association += fill + "    <association fetchType=\"lazy\" property=\"" + rtDoName + "\" column=\"" + foreignKeyItem.getFieldName() + "\" select=\"" + project.getMapperPackage() + "." + rtUpName + "Mapper." + "get" + rtUpName + "By" + rtpUpName + "\"/>\n";
                 }
 
             }
+            xml+=result;
+            xml+=association;
         }
         List<TableHandle> associatedList=project.getAssociatedListByTableName(name);
         for(TableHandle tableItem:associatedList){

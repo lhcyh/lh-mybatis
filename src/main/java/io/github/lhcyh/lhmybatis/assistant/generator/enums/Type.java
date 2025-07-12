@@ -9,12 +9,12 @@ public enum Type {
     INT("int","Integer"),
     BIGINT("bigint","Long"),
     TINYINT("tinyint","Integer"),
-    DATETIME("datetime","Date"),
+    DATETIME("datetime","LocalDateTime"),
     FLOAT("float","Float"),
     DOUBLE("double","Double"),
     BIT("bit","Boolean"),
     ENUM("enum",null),
-    TIMESTAMP("timestamp","Date"),
+    TIMESTAMP("timestamp","LocalDateTime"),
     DECIMAL("decimal","BigDecimal");
     private String mysqlType;
     private String javaType;
