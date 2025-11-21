@@ -5,6 +5,8 @@ import io.github.lhcyh.lhmybatis.assistant.generator.utils.*;
 import io.github.lhcyh.lhswing.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -157,6 +159,9 @@ public class Generator{
         this.rootDiv.add(button);
     }
 
+    /**
+     * 创建选择表界面
+     */
     private void createSelectPanel(){
         this.rootDiv.removeAll();
         LhDiv contentDiv=new LhDiv();
@@ -850,6 +855,13 @@ public class Generator{
             right.add(item);
             inputs[i]=input;
         }
+
+        LhDiv mDiv=new LhDiv();
+        mDiv.setFlexDirection(FlexDirection.COLUMN);
+        mDiv.setPadding(5);
+
+        LhCheckBox lhCheckBox=new LhCheckBox("多模块");
+        lhCheckBox.
 
 
 //        LhDiv item2=new LhDiv();
