@@ -860,39 +860,20 @@ public class Generator{
         mDiv.setFlexDirection(FlexDirection.COLUMN);
         mDiv.setPadding(5);
 
+        LhInput mInput=new LhInput();
+        mInput.setWidth(250);
+        mInput.setFontSize(tSize3);
+        mInput.setT
+
         LhCheckBox lhCheckBox=new LhCheckBox("多模块");
-        lhCheckBox.
+        lhCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                if(itemEvent.getStateChange()==ItemEvent.SELECTED){
 
-
-//        LhDiv item2=new LhDiv();
-//        item2.setPadding(5);
-//        LhLabel entity=new LhLabel("生成entity的路径");
-//        item2.add(entity);
-//        LhInput entityInput=new LhInput();
-//        entityInput.setText("com.example.demo.entity");
-//        item2.add(entityInput);
-//
-//        LhDiv item3=new LhDiv();
-//        item3.setPadding(5);
-//        LhLabel mapper=new LhLabel("生成mapper接口的路径");
-//        item3.add(mapper);
-//        LhInput mapperInput=new LhInput();
-//        mapperInput.setText("com.example.demo.mapper");
-//        item3.add(mapperInput);
-//
-//        right.add(item1);
-//        right.add(item2);
-//        right.add(item3);
-//
-//        String pojoPackage=profile.getProject().getPojoPackage();
-//        String entityPackage=profile.getProject().getEntityPackage();
-//        String mapperPackage=profile.getProject().getMapperPackage();
-//        if(pojoPackage!=null)
-//            pojoInput.setText(pojoPackage);
-//        if(entityPackage!=null)
-//            entityInput.setText(entityPackage);
-//        if(mapperPackage!=null)
-//            mapperInput.setText(mapperPackage);
+                }
+            }
+        });
 
         submitButton.addActionListener(new ActionListener() {
             @Override
