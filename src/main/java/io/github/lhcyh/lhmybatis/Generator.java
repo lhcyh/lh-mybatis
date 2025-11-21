@@ -856,24 +856,24 @@ public class Generator{
             inputs[i]=input;
         }
 
-        LhDiv mDiv=new LhDiv();
-        mDiv.setFlexDirection(FlexDirection.COLUMN);
-        mDiv.setPadding(5);
-
-        LhInput mInput=new LhInput();
-        mInput.setWidth(250);
-        mInput.setFontSize(tSize3);
-        mInput.setT
-
-        LhCheckBox lhCheckBox=new LhCheckBox("多模块");
-        lhCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent itemEvent) {
-                if(itemEvent.getStateChange()==ItemEvent.SELECTED){
-
-                }
-            }
-        });
+//        LhDiv mDiv=new LhDiv();
+//        mDiv.setFlexDirection(FlexDirection.COLUMN);
+//        mDiv.setPadding(5);
+//
+//        LhInput mInput=new LhInput();
+//        mInput.setWidth(250);
+//        mInput.setFontSize(tSize3);
+//        mInput.setT
+//
+//        LhCheckBox lhCheckBox=new LhCheckBox("多模块");
+//        lhCheckBox.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent itemEvent) {
+//                if(itemEvent.getStateChange()==ItemEvent.SELECTED){
+//
+//                }
+//            }
+//        });
 
         submitButton.addActionListener(new ActionListener() {
             @Override
