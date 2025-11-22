@@ -6,7 +6,7 @@
 
     <groupId>io.github.lhcyh</groupId>
     <artifactId>lh-mybatis</artifactId>
-    <version>2.5.0</version>
+    <version>2.6.0</version>
     <packaging>jar</packaging>
     <name>LhMybatis</name>
     <url>https://github.com/lhcyh/lh-mybatis</url>
@@ -77,7 +77,7 @@
         <dependency>
             <groupId>io.github.lhcyh</groupId>
             <artifactId>lh-swing</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 

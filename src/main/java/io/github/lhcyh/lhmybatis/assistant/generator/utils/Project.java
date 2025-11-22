@@ -13,6 +13,7 @@ public class Project implements Serializable {
     private String pojoPackage;
     private String entityPackage;
     private String mapperPackage;
+    private String module;
 
     public TableHandle getTableByName(String tableName){
         for(TableHandle table:tableList){
@@ -81,5 +82,13 @@ public class Project implements Serializable {
 
     public void setMapperPackage(String mapperPackage) {
         this.mapperPackage = mapperPackage;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
     }
 }

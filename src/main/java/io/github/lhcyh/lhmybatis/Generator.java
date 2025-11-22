@@ -1,12 +1,13 @@
 package io.github.lhcyh.lhmybatis;
 
-import io.github.lhcyh.lhmybatis.assistant.generator.pojo.*;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.CodeFile;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.ForeignKey;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.Profile;
+import io.github.lhcyh.lhmybatis.assistant.generator.pojo.ProjectCode;
 import io.github.lhcyh.lhmybatis.assistant.generator.utils.*;
 import io.github.lhcyh.lhswing.*;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Generator{
+public class Generator {
     /** 文字尺寸1 **/
     private int tSize1=27;
     /** 文字尺寸2 **/
@@ -820,12 +821,19 @@ public class Generator{
         this.createCenterContent(tableList.get(0),center);
 
         LhDiv right=new LhDiv();
-        right.setPadding(15);
-        right.setFlexDirection(FlexDirection.COLUMN);
-        right.setBorder(1,Color.GRAY);
+//        right.setPadding(15);
+//        right.setFlexDirection(FlexDirection.COLUMN);
+//        right.setBorder(1,Color.GRAY);
         tContent.add(right);
         right.setWidthPercent(0.25f);
-        right.setHeightPercent(0.9f);
+        right.setHeightPercent(1f);
+
+        LhScrollPane rightScroll=new LhScrollPane();
+        right.add(rightScroll);
+        rightScroll.setWidthPercent(0.9f);
+        rightScroll.setHeightPercent(0.9f);
+        LhDiv rightDiv=rightScroll.getDiv();
+        rightDiv.setFlexDirection(FlexDirection.COLUMN);
 
         String[] titles={"生成model的路径","生成entity的路径","生成mapper接口的路径"};
         String[] paths={"com.example.demo.pojo","com.example.demo.entity","com.example.demo.mapper"};
@@ -852,28 +860,39 @@ public class Generator{
             input.setFontSize(tSize3);
             input.setText(paths[i]);
             item.add(input);
-            right.add(item);
+            rightDiv.add(item);
             inputs[i]=input;
         }
 
-//        LhDiv mDiv=new LhDiv();
-//        mDiv.setFlexDirection(FlexDirection.COLUMN);
-//        mDiv.setPadding(5);
-//
-//        LhInput mInput=new LhInput();
-//        mInput.setWidth(250);
-//        mInput.setFontSize(tSize3);
-//        mInput.setT
-//
-//        LhCheckBox lhCheckBox=new LhCheckBox("多模块");
-//        lhCheckBox.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent itemEvent) {
-//                if(itemEvent.getStateChange()==ItemEvent.SELECTED){
-//
-//                }
-//            }
-//        });
+        LhDiv mDiv=new LhDiv();
+        mDiv.setFlexDirection(FlexDirection.COLUMN);
+        mDiv.setPadding(5);
+
+        LhInput mInput=new LhInput();
+        mInput.setWidth(250);
+        mInput.setFontSize(tSize3);
+        mInput.setPlaceholder("请输入模块名");
+
+        LhCheckBox lhCheckBox=new LhCheckBox("多模块");
+        mDiv.add(lhCheckBox);
+        lhCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                if(itemEvent.getStateChange()==ItemEvent.SELECTED){
+                    mDiv.add(mInput);
+                }else {
+                    mDiv.remove(mInput);
+                }
+            }
+        });
+
+        String module=profile.getProject().getModule();
+        if(module!=null&&!module.equals("")){
+            lhCheckBox.setSelected(true);
+            mInput.setText(module);
+        }
+
+        rightDiv.add(mDiv);
 
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -884,14 +903,13 @@ public class Generator{
                         return;
                     }
                 }
-//                if(entityInput.getText().equals("")){
-//                    JOptionPane.showMessageDialog(null,"请输入生成entity路径");
-//                    return;
-//                }
-//                if(mapperInput.getText().equals("")){
-//                    JOptionPane.showMessageDialog(null,"请输入生成mapper路径");
-//                    return;
-//                }
+
+                if(lhCheckBox.isSelected()){
+                    if(mInput.getText().equals("")){
+                        JOptionPane.showMessageDialog(null,"请输入模块名");
+                        return;
+                    }
+                }
 
                 for(int i=0;i<tableList.size();i++){
                     if(!checkForeignKey(tableList.get(i).getForeignKeyList())){
@@ -906,11 +924,19 @@ public class Generator{
                 profile.getProject().setPojoPackage(inputs[0].getText());
                 profile.getProject().setEntityPackage(inputs[1].getText());
                 profile.getProject().setMapperPackage(inputs[2].getText());
+                if(lhCheckBox.isSelected()) {
+                    profile.getProject().setModule(mInput.getText());
+                }else {
+                    profile.getProject().setModule("");
+                }
                 setProfile(profile);
 
                 MybatisFactory mybatisFactory=new MybatisFactory(profile.getProject());
                 ProjectCode projectCode=mybatisFactory.getProjectCode();
                 String currentDir = System.getProperty("user.dir");
+                if(!profile.getProject().getModule().equals("")){
+                    currentDir=currentDir+"\\"+profile.getProject().getModule();
+                }
                 String path=currentDir+"\\"+"src\\main\\java\\";
 
                 List<CodeFile> codeFileList=projectCode.getPojo();
@@ -1007,8 +1033,9 @@ public class Generator{
 
 
     private void setProfile(Profile profile){
+        String path="generator.profile";
         // 将Map保存到文件
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("generator.profile"))) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path))) {
             out.writeObject(profile);
         } catch (IOException e) {
             e.printStackTrace();
