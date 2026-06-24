@@ -1,9 +1,12 @@
 package io.github.lhcyh.lhmybatis.assistant.example;
 
 public enum Condition{
+    LeftParenthesis("(",ValueType.NoValue),
+    RightParenthesis(")",ValueType.NoValue),
     EqualTo("=", ValueType.SingleValue),
     NotEqualTo("!=", ValueType.SingleValue),
     GreaterThan(">", ValueType.SingleValue),
+    GreaterThanOrEqualTo(">=",ValueType.SingleValue),
     LessThan("<", ValueType.SingleValue),
     LessThanOrEqualTo("<=", ValueType.SingleValue),
     Between("between", ValueType.BetweenValue),
@@ -25,5 +28,14 @@ public enum Condition{
 
     public ValueType getValueType() {
         return valueType;
+    }
+
+    public static Condition getConditionByValue(String value){
+        for(Condition condition:Condition.values()){
+            if(condition.getValue().equals(value)){
+                return condition;
+            }
+        }
+        return null;
     }
 }

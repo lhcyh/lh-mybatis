@@ -1,9 +1,6 @@
 package io.github.lhcyh.lhmybatis;
 
-import io.github.lhcyh.lhmybatis.assistant.example.Condition;
-import io.github.lhcyh.lhmybatis.assistant.example.Criterion;
-import io.github.lhcyh.lhmybatis.assistant.example.JoinInfo;
-import io.github.lhcyh.lhmybatis.assistant.example.ValueType;
+import io.github.lhcyh.lhmybatis.assistant.example.*;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import java.lang.reflect.Field;
@@ -16,8 +13,8 @@ import java.util.*;
  * @param <Model>
  */
 public class Example<Model> {
-    /** or准则数组，数组每一项是and准则数组 **/
-    private List<List<Criterion>> orCriterionList;
+    /** 准则数组 **/
+    private List<Criterion> criterionList;
     /** 要连接的表名数组 **/
     private Set<JoinInfo> leftJoinList;
     /** sql语句的limit的起始行数，从0开始 **/
@@ -25,12 +22,11 @@ public class Example<Model> {
     /** 要查询的条数 **/
     private Integer limitNum;
     /** 排序准则 **/
-    private Criterion orderBy;
+    private List<Criterion> orderList;
+    private String extend;
 
     public Example(){
-        orCriterionList=new ArrayList<>();
-        List<Criterion> criterionList=new ArrayList<>();
-        orCriterionList.add(criterionList);
+        criterionList=new ArrayList<>();
         leftJoinList=new HashSet<>();
     }
 
@@ -40,19 +36,56 @@ public class Example<Model> {
      * @param field
      * @return
      */
-    private Method getGetMethod(Object model,Field field){
-        // 获取属性的名字
-        String property = field.getName();
-        // 将属性的首字符大写，方便构造get，set方法
-        String name = property.substring(0, 1).toUpperCase() + property.substring(1);
-        Method m=null;
+    private Method getGetMethod(Object model, Field field) {
+        if (model == null || field == null) {
+            throw new IllegalArgumentException("Model and field cannot be null");
+        }
+
+        String fieldName = field.getName();
+
+        // 确定标准方法名（首字母大写）
+        String standardMethodName;
+        if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+            // 布尔类型使用 is 前缀
+            standardMethodName = "is" + capitalize(fieldName);
+        } else {
+            // 其他类型使用 get 前缀
+            standardMethodName = "get" + capitalize(fieldName);
+        }
 
         try {
-            m = model.getClass().getMethod("get" + name);
+            // 首先尝试标准的首字母大写形式
+            return model.getClass().getMethod(standardMethodName);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            // 如果标准形式失败，再尝试直接在字段名前加前缀（用于处理特殊情况，如 tSum -> gettSum）
+            String directMethodName;
+            if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                directMethodName = "is" + fieldName;
+            } else {
+                directMethodName = "get" + fieldName;
+            }
+
+            try {
+                return model.getClass().getMethod(directMethodName);
+            } catch (NoSuchMethodException ex) {
+                // 两种方式都失败了，记录错误或抛出异常
+                System.out.println("Getter method not found for field: " + fieldName +
+                        ". Tried '" + standardMethodName + "' and '" + directMethodName + "'");
+                return null; // 或者根据需要抛出异常
+            }
         }
-        return m;
+    }
+
+    /**
+     * 将字符串的首字母大写
+     * @param str 输入字符串
+     * @return 首字母大写的字符串
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     /**
@@ -245,6 +278,22 @@ public class Example<Model> {
         return value;
     }
 
+    private String handlePrefix(Prefix prefix){
+        if(prefix==null){
+            return null;
+        }
+        if(criterionList.size()>0){
+            Criterion criterion=criterionList.get(criterionList.size()-1);
+            Condition condition=Condition.getConditionByValue(criterion.getCondition());
+            if(condition==Condition.LeftParenthesis){
+                return null;
+            }else {
+                return prefix.name();
+            }
+        }
+        return prefix.name();
+    }
+
     /**
      * 创建查询准则
      * @param tClass
@@ -252,12 +301,13 @@ public class Example<Model> {
      * @param condition
      * @return
      */
-    private Criterion createCriterion(Class tClass, Field field, Condition condition){
+    private Criterion createCriterion(Prefix prefix,Class tClass, Field field, Condition condition){
         Criterion criterion=new Criterion();
         String tableName=getTableName(tClass);
         criterion.setTable(tableName);
         String fieldName=getFiledName(field);
         criterion.setField(fieldName);
+        criterion.setPrefix(handlePrefix(prefix));
         if(condition!=null){
             criterion.setCondition(condition.getValue());
             criterion.setValueType(condition.getValueType().getValue());
@@ -267,10 +317,24 @@ public class Example<Model> {
 
     /**
      * 载入查询准则
+     * @param condition 判断条件（无表属性无值条件）
+     */
+    private void loadCriterion(Prefix prefix,Condition condition){
+        if(condition.getValueType()!= ValueType.NoValue){
+            new Exception("Parameter error").printStackTrace();
+            return;
+        }
+        Criterion criterion=new Criterion();
+        criterion.setCondition(condition.getValue());
+        criterion.setPrefix(handlePrefix(prefix));
+    }
+
+    /**
+     * 载入查询准则
      * @param model 属性值模板
      * @param condition 判断条件（单值条件或无值条件）
      */
-    private void loadCriterion(Object model, Condition condition){
+    private void loadCriterion(Prefix prefix,Object model, Condition condition){
         if(!(condition.getValueType()== ValueType.NoValue||condition.getValueType()== ValueType.SingleValue)){
             new Exception("Parameter error").printStackTrace();
             return;
@@ -288,11 +352,11 @@ public class Example<Model> {
             JoinInfo joinInfo=getJoinInfo(model.getClass(),field);
             if(joinInfo!=null){
                 leftJoinList.add(joinInfo);
-                loadCriterion(value,condition);
+                loadCriterion(prefix,value,condition);
             }else {
-                Criterion criterion=createCriterion(model.getClass(),field,condition);
+                Criterion criterion=createCriterion(prefix,model.getClass(),field,condition);
                 criterion.setValue(value);
-                orCriterionList.get(orCriterionList.size() - 1).add(criterion);
+                criterionList.add(criterion);
             }
         }
     }
@@ -302,7 +366,7 @@ public class Example<Model> {
      * @param modelList 属性模板列表
      * @param condition 判断条件（多值条件）
      */
-    private void loadCriterion(List<Object> modelList,Condition condition){
+    private void loadCriterion(Prefix prefix,List<Object> modelList,Condition condition){
         if(!(condition.getValueType()== ValueType.ListValue)){
             new Exception("Parameter error").printStackTrace();
             return;
@@ -322,12 +386,12 @@ public class Example<Model> {
             if(valueList.size()>0){
                 JoinInfo joinInfo=getJoinInfo(modelList.get(0).getClass(),field);
                 if(joinInfo!=null){
-                    loadCriterion(valueList,condition);
+                    loadCriterion(prefix,valueList,condition);
                     leftJoinList.add(joinInfo);
                 }else {
-                    Criterion criterion=createCriterion(modelList.get(0).getClass(),field,condition);
+                    Criterion criterion=createCriterion(prefix,modelList.get(0).getClass(),field,condition);
                     criterion.setValue(valueList);
-                    orCriterionList.get(orCriterionList.size()-1).add(criterion);
+                    criterionList.add(criterion);
                 }
             }
         }
@@ -339,7 +403,7 @@ public class Example<Model> {
      * @param model2 属性模板2
      * @param condition 判断条件（between条件）
      */
-    private void loadCriterion(Object model1,Object model2,Condition condition){
+    private void loadCriterion(Prefix prefix,Object model1,Object model2,Condition condition){
         if(!(condition.getValueType()== ValueType.BetweenValue)){
             new Exception("Parameter error").printStackTrace();
             return;
@@ -356,13 +420,13 @@ public class Example<Model> {
             }
             JoinInfo joinInfo=getJoinInfo(model1.getClass(),field);
             if(joinInfo!=null){
-                loadCriterion(value1,value2,condition);
+                loadCriterion(prefix,value1,value2,condition);
                 leftJoinList.add(joinInfo);
             }else {
-                Criterion criterion=createCriterion(model1.getClass(),field,condition);
+                Criterion criterion=createCriterion(prefix,model1.getClass(),field,condition);
                 criterion.setValue(value1);
                 criterion.setSecondValue(value2);
-                orCriterionList.get(orCriterionList.size()-1).add(criterion);
+                criterionList.add(criterion);
             }
         }
     }
@@ -387,22 +451,173 @@ public class Example<Model> {
                 loadCriterion(value,order);
                 leftJoinList.add(joinInfo);
             }else {
-                Criterion criterion=createCriterion(model.getClass(),field,null);
+                if(orderList==null){
+                    orderList=new ArrayList<>();
+                }
+                Criterion criterion=createCriterion(null,model.getClass(),field,null);
                 criterion.setCondition(order.getValue());
-                orderBy=criterion;
+                orderList.add(criterion);
                 break;
             }
         }
     }
 
 
+//    /**
+//     * 添加or条件，or两边的and条件自动加上括号
+//     * @return
+//     */
+//    public Example<Model> or(){
+//        List<Criterion> criterionList=new ArrayList<>();
+//        orCriterionList.add(criterionList);
+//        return this;
+//    }
+
     /**
-     * 添加or条件，or两边的and条件自动加上括号
+     * 添加右括号
      * @return
      */
-    public Example<Model> or(){
-        List<Criterion> criterionList=new ArrayList<>();
-        orCriterionList.add(criterionList);
+    public Example<Model> rightParenthesis(){
+        loadCriterion(null,Condition.RightParenthesis);
+        return this;
+    }
+
+    /**
+     * 添加左括号
+     * @return
+     */
+    public Example<Model> orLeftParenthesis(){
+        loadCriterion(Prefix.OR,Condition.LeftParenthesis);
+        return this;
+    }
+
+    /**
+     * 添加判断为null的条件，model内不为null的属性作为判空条件
+     * @param model
+     * @return
+     */
+    public Example<Model> orIsNull(Model model){
+        loadCriterion(Prefix.OR,model, Condition.IsNull);
+        return this;
+    }
+
+    /**
+     * 添加判断不为null的条件，model内不为null的属性作为判断不为null条件
+     * @param model
+     * @return
+     */
+    public Example<Model> orIsNotNull(Model model){
+        loadCriterion(Prefix.OR,model, Condition.IsNotNull);
+        return this;
+    }
+
+    /**
+     * 添加between条件，model内不为null的属性作为between条件
+     * @param model1
+     * @param model2
+     * @return
+     */
+    public Example<Model> orBetween(Model model1,Model model2){
+        loadCriterion(Prefix.OR,model1,model2, Condition.Between);
+        return this;
+    }
+
+    /**
+     * 添加等于条件，model内不为null的属性作为等于条件值
+     * @param model
+     * @return
+     */
+    public Example<Model> orEqualTo(Model model){
+        loadCriterion(Prefix.OR,model, Condition.EqualTo);
+        return this;
+    }
+
+    /**
+     * 添加不等于条件，model内不为null的属性作为不等于条件的值
+     * @param model
+     * @return
+     */
+    public Example<Model> orNotEqualTo(Model model){
+        loadCriterion(Prefix.OR,model, Condition.NotEqualTo);
+        return this;
+    }
+
+    /**
+     * 添加大于条件，model内不为null的属性作为大于条件的值
+     * @param model
+     * @return
+     */
+    public Example<Model> orGreaterThan(Model model){
+        loadCriterion(Prefix.OR,model, Condition.GreaterThan);
+        return this;
+    }
+
+    /**
+     * 添加大于或等于条件，model内不为null的属性作为大于或等于条件的值
+     * @param model
+     * @return
+     */
+    public Example<Model> orGreaterThanOrEqualTo(Model model){
+        loadCriterion(Prefix.OR,model, Condition.GreaterThanOrEqualTo);
+        return this;
+    }
+
+    /**
+     * 添加小于条件，model内不为null的属性作为小于条件
+     * @param model
+     * @return
+     */
+    public Example<Model> orLessThan(Model model){
+        loadCriterion(Prefix.OR,model, Condition.LessThan);
+        return this;
+    }
+
+    /**
+     * 添加小于或等于条件，model内不为null的属性作为小于或等于条件
+     * @param model
+     * @return
+     */
+    public Example<Model> orLessThanOrEqualTo(Model model){
+        loadCriterion(Prefix.OR,model, Condition.LessThanOrEqualTo);
+        return this;
+    }
+
+    /**
+     * 添加 like 条件，model内不为null的属性作为 like 条件
+     * @param model
+     * @return
+     */
+    public Example<Model> orLike(Model model){
+        loadCriterion(Prefix.OR,model, Condition.Like);
+        return this;
+    }
+
+    /**
+     * 添加 not like 条件，model内不为 null 的属性作为 not like 条件的值
+     * @param model
+     * @return
+     */
+    public Example<Model> orNotLike(Model model){
+        loadCriterion(Prefix.OR,model, Condition.NotLike);
+        return this;
+    }
+
+    /**
+     * 添加in条件，model内不为null的属性作为in条件
+     * @param modelList
+     * @return
+     */
+    public Example<Model> orIn(List<Model> modelList){
+        loadCriterion(Prefix.OR,(List<Object>) modelList, Condition.In);
+        return this;
+    }
+
+    /**
+     * 添加左括号
+     * @return
+     */
+    public Example<Model> andLeftParenthesis(){
+        loadCriterion(Prefix.AND,Condition.LeftParenthesis);
         return this;
     }
 
@@ -412,7 +627,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andIsNull(Model model){
-        loadCriterion(model, Condition.IsNull);
+        loadCriterion(Prefix.AND,model, Condition.IsNull);
         return this;
     }
 
@@ -422,7 +637,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andIsNotNull(Model model){
-        loadCriterion(model, Condition.IsNotNull);
+        loadCriterion(Prefix.AND,model, Condition.IsNotNull);
         return this;
     }
 
@@ -433,7 +648,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andBetween(Model model1,Model model2){
-        loadCriterion(model1,model2, Condition.Between);
+        loadCriterion(Prefix.AND,model1,model2, Condition.Between);
         return this;
     }
 
@@ -443,7 +658,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andEqualTo(Model model){
-        loadCriterion(model, Condition.EqualTo);
+        loadCriterion(Prefix.AND,model, Condition.EqualTo);
         return this;
     }
 
@@ -453,7 +668,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andNotEqualTo(Model model){
-        loadCriterion(model, Condition.NotEqualTo);
+        loadCriterion(Prefix.AND,model, Condition.NotEqualTo);
         return this;
     }
 
@@ -463,7 +678,17 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andGreaterThan(Model model){
-        loadCriterion(model, Condition.GreaterThan);
+        loadCriterion(Prefix.AND,model, Condition.GreaterThan);
+        return this;
+    }
+
+    /**
+     * 添加大于或等于条件，model内不为null的属性作为大于或等于条件的值
+     * @param model
+     * @return
+     */
+    public Example<Model> andGreaterThanOrEqualTo(Model model){
+        loadCriterion(Prefix.AND,model, Condition.GreaterThanOrEqualTo);
         return this;
     }
 
@@ -473,7 +698,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andLessThan(Model model){
-        loadCriterion(model, Condition.LessThan);
+        loadCriterion(Prefix.AND,model, Condition.LessThan);
         return this;
     }
 
@@ -483,7 +708,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andLessThanOrEqualTo(Model model){
-        loadCriterion(model, Condition.LessThanOrEqualTo);
+        loadCriterion(Prefix.AND,model, Condition.LessThanOrEqualTo);
         return this;
     }
 
@@ -493,7 +718,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andLike(Model model){
-        loadCriterion(model, Condition.Like);
+        loadCriterion(Prefix.AND,model, Condition.Like);
         return this;
     }
 
@@ -503,7 +728,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andNotLike(Model model){
-        loadCriterion(model, Condition.NotLike);
+        loadCriterion(Prefix.AND,model, Condition.NotLike);
         return this;
     }
 
@@ -513,7 +738,7 @@ public class Example<Model> {
      * @return
      */
     public Example<Model> andIn(List<Model> modelList){
-        loadCriterion((List<Object>) modelList, Condition.In);
+        loadCriterion(Prefix.AND,(List<Object>) modelList, Condition.In);
         return this;
     }
 
@@ -564,8 +789,16 @@ public class Example<Model> {
         return this;
     }
 
-    public List<List<Criterion>> getOrCriterionList() {
-        return orCriterionList;
+    public void setExtend(String extend) {
+        this.extend = extend;
+    }
+
+    public List<Criterion> getCriterionList() {
+        return criterionList;
+    }
+
+    public List<Criterion> getOrderList() {
+        return orderList;
     }
 
     public Set<JoinInfo> getLeftJoinList() {
@@ -578,10 +811,6 @@ public class Example<Model> {
 
     public Integer getLimitNum() {
         return limitNum;
-    }
-
-    public Criterion getOrderBy() {
-        return orderBy;
     }
 
 }

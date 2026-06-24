@@ -4,6 +4,7 @@ package io.github.lhcyh.lhmybatis.assistant.example;
  * 准则
  */
 public class Criterion{
+    private String prefix;
     private String table;
     private String field;
     private Object value;
@@ -57,5 +58,13 @@ public class Criterion{
 
     public void setSecondValue(Object secondValue) {
         this.secondValue = secondValue;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }
