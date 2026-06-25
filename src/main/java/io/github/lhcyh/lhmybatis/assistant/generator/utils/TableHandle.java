@@ -116,9 +116,19 @@ public class TableHandle implements Serializable {
         if((foreignKeyList==null||foreignKeyList.size()==0)&&(associatedList.size()==0)){
             return null;
         }
-        String entityCodeHead="package "+project.getEntityPackage()+";\n\n";
-        entityCodeHead+="import com.fasterxml.jackson.annotation.JsonIgnoreProperties;\n";
-        entityCodeHead+="import "+project.getPojoPackage()+"."+getFileName("")+";\n";
+        StringBuilder entityCodeHead=new StringBuilder();
+        entityCodeHead.append("package ");
+        entityCodeHead.append(project.getEntityPackage());
+        entityCodeHead.append(";\n\n");
+
+        entityCodeHead.append("import com.fasterxml.jackson.annotation.JsonIgnoreProperties;\n");
+
+        entityCodeHead.append("import ");
+        entityCodeHead.append(project.getPojoPackage());
+        entityCodeHead.append(".");
+        entityCodeHead.append(getFileName(""));
+        entityCodeHead.append(";\n");
+
         String entityCode="@JsonIgnoreProperties(value={\"handler\"})\n";
         entityCode+="public class "+getFileName("Entity")+" extends "+getFileName("")+"{\n";
         String lp="";
@@ -134,7 +144,7 @@ public class TableHandle implements Serializable {
                         entity = "Entity";
 //                        entityCodeHead += "import " + project.getEntityPackage() + "." + upCamelName + "Entity;\n";
                     } else {
-                        entityCodeHead += "import " + project.getPojoPackage() + "." + upCamelName + ";\n";
+                        entityCodeHead.append("import " + project.getPojoPackage() + "." + upCamelName + ";\n");
                     }
                     entityCode += "    @LeftJoin(leftKey=\""+foreignKey.getFieldName()+"\",rightKey=\""+foreignKey.getReferencedFieldName()+"\")\n";
                     entityCode += "    private " + upCamelName + entity + " " + doCamelName + ";\n";
@@ -172,6 +182,7 @@ public class TableHandle implements Serializable {
                 switch (foreignKey.getAssociate()) {
                     case OneToOneR:
                         lp="import io.github.lhcyh.lhmybatis.LeftJoin;\n";
+                        entityCode += "    @LeftJoin(leftKey=\""+foreignKey.getReferencedFieldName()+"\",rightKey=\""+foreignKey.getFieldName()+"\")\n";
                         entityCode += "    private " + upCamelName + entity + "  " + doCamelName + ";\n";
                         entityGetSet += "    public " + upCamelName + entity + " get" + upCamelName + "(){\n";
                         entityGetSet += "        return " + doCamelName + ";\n";
@@ -192,17 +203,17 @@ public class TableHandle implements Serializable {
                 }
             }
             if(iTag){
-                entityCodeHead+=iPackage;
+                entityCodeHead.append(iPackage);
             }
         }
-        entityCodeHead+=lp;
+        entityCodeHead.append(lp);
         if(entityCode.contains("List")){
-            entityCodeHead+="import java.util.List;\n";
+            entityCodeHead.append("import java.util.List;\n");
         }
         if(entityGetSet.equals("")){
             return null;
         }else {
-            return entityCodeHead+"\n"+entityCode+"\n"+entityGetSet+"}\n";
+            return entityCodeHead.toString()+"\n"+entityCode+"\n"+entityGetSet+"}\n";
         }
     }
 

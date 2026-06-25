@@ -100,7 +100,7 @@ public class MybatisFactory {
         code.append("    <sql id=\"footClause\">\n");
         code.append("        <if test=\"orderList!=null\">\n");
         code.append("            order by\n");
-        code.append("            <foreach collection=\"orderList\" item=\"orderItem\" separator=\",\">\n");
+        code.append("            <foreach collection=\"orderList\" item=\"criterion\" separator=\",\">\n");
         code.append("                ${criterion.table}.${criterion.field} ${criterion.condition}\n");
         code.append("            </foreach>\n");
         code.append("        </if>\n");
