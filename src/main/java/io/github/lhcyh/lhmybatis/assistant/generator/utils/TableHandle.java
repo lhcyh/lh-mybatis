@@ -55,16 +55,37 @@ public class TableHandle implements Serializable {
     }
 
     public String getPojoCode(Project project){
-        String pojoCode ="package "+project.getPojoPackage()+";\n\n";
-        pojoCode+="public class "+getFileName("")+"{\n";
-        String propertyList="";
-        String getSetList="";
+        StringBuilder pojoCode =new StringBuilder();
+        pojoCode.append("package ");
+        pojoCode.append(project.getPojoPackage());
+        pojoCode.append(";\n\n");
+
+        StringBuilder propertyList=new StringBuilder();
+        StringBuilder getSetList=new StringBuilder();
+        boolean isExistDateTime=false;
         for(Field field:fieldList){
-            propertyList+=field.getJavaProperty("    ")+"\n";
-            getSetList+=field.getJavaGet("    ")+"\n\n";
-            getSetList+=field.getJavaSet("    ")+"\n\n";
+            if(field.getType()==Type.DATETIME){
+                isExistDateTime=true;
+            }
+            propertyList.append(field.getJavaProperty("    "));
+            propertyList.append("\n");
+            getSetList.append(field.getJavaGet("    "));
+            getSetList.append("\n\n");
+            getSetList.append(field.getJavaSet("    "));
+            getSetList.append("\n\n");
         }
 
+        if(isExistDateTime){
+            pojoCode.append("import java.time.LocalDateTime;\n\n");
+        }
+        pojoCode.append("public class ");
+        pojoCode.append(getFileName(""));
+        pojoCode.append("{\n");
+
+        pojoCode.append(propertyList);
+        pojoCode.append("\n");
+        pojoCode.append(getSetList);
+        pojoCode.append("}");
 //        for(ForeignKey foreignKey:foreignKeyList){
 //            if(foreignKey.getAssociate()==ForeignKey.Associate.OneToOneL){
 //                propertyList+=CodeUtils.getPropertyByTableName(foreignKey.getReferencedTableName(),"    ")+"\n";
@@ -87,7 +108,7 @@ public class TableHandle implements Serializable {
 //                    break;
 //            }
 //        }
-        return pojoCode+propertyList+"\n"+getSetList+"}";
+        return pojoCode.toString();
     }
 
     public String getEntityCode(Project project){

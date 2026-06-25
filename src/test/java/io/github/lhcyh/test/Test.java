@@ -9,6 +9,6 @@ import io.github.lhcyh.lhmybatis.Generator;
  */
 public class Test {
     public static void main(String[] args) {
-        new Generator();
+//        new Generator();
     }
 }

@@ -23,7 +23,7 @@ public class Example<Model> {
     private Integer limitNum;
     /** 排序准则 **/
     private List<Criterion> orderList;
-    private String extend;
+    private Object extend;
 
     public Example(){
         criterionList=new ArrayList<>();
@@ -326,7 +326,9 @@ public class Example<Model> {
         }
         Criterion criterion=new Criterion();
         criterion.setCondition(condition.getValue());
+        criterion.setValueType(condition.getValueType().getValue());
         criterion.setPrefix(handlePrefix(prefix));
+        criterionList.add(criterion);
     }
 
     /**
@@ -457,7 +459,6 @@ public class Example<Model> {
                 Criterion criterion=createCriterion(null,model.getClass(),field,null);
                 criterion.setCondition(order.getValue());
                 orderList.add(criterion);
-                break;
             }
         }
     }
@@ -789,8 +790,12 @@ public class Example<Model> {
         return this;
     }
 
-    public void setExtend(String extend) {
+    public void setExtend(Object extend) {
         this.extend = extend;
+    }
+
+    public Object getExtend() {
+        return extend;
     }
 
     public List<Criterion> getCriterionList() {

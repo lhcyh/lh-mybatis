@@ -57,53 +57,69 @@ public class MybatisFactory {
 
     public CodeFile getCommonFile(){
         CodeFile common=new CodeFile();
-        String code="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n" +
-                "<mapper namespace=\"Common\">\n\n" +
-                "    <sql id=\"exampleClause\">\n" +
-                "        <foreach collection=\"leftJoinList\" item=\"joinInfo\">\n" +
-                "            left join ${joinInfo.rightTable} on ${joinInfo.leftTable}.${joinInfo.leftKey}=${joinInfo.rightTable}.${joinInfo.rightKey}\n" +
-                "        </foreach>\n" +
-                "        <where>\n" +
-                "            <foreach collection=\"orCriterionList\" item=\"criterionList\" separator=\"or\">\n" +
-                "                <trim prefix=\"(\" prefixOverrides=\"and\" suffix=\")\">\n" +
-                "                    <foreach collection=\"criterionList\" item=\"criterion\">\n" +
-                "                        and ${criterion.table}.${criterion.field}\n" +
-                "                        <choose>\n" +
-                "                            <when test=\"criterion.valueType=='noValue'\">\n" +
-                "                                ${criterion.condition}\n" +
-                "                            </when>\n" +
-                "                            <when test=\"criterion.valueType=='singleValue'\">\n" +
-                "                                ${criterion.condition} #{criterion.value}\n" +
-                "                            </when>\n" +
-                "                            <when test=\"criterion.valueType=='betweenValue'\">\n" +
-                "                                ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
-                "                            </when>\n" +
-                "                            <when test=\"criterion.valueType=='listValue'\">\n" +
-                "                                ${criterion.condition}\n" +
-                "                                <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n" +
-                "                                    #{listItem}\n" +
-                "                                </foreach>\n" +
-                "                            </when>\n" +
-                "                        </choose>\n" +
-                "                    </foreach>\n" +
-                "                </trim>\n" +
-                "            </foreach>\n" +
-                "        </where>\n" +
-                "        <if test=\"orderBy!=null\">\n" +
-                "            order by ${orderBy.table}.${orderBy.field} ${orderBy.condition}\n" +
-                "        </if>\n" +
-                "        <if test=\"limitNum!=null\">\n" +
-                "            limit\n"+
-                "            <if test=\"limitStart!=null\">\n" +
-                "                 #{limitStart},\n" +
-                "            </if>\n" +
-                "            #{limitNum}\n" +
-                "        </if>\n" +
-                "    </sql>\n" +
-                "\n" +
-                "</mapper>\n";
-        common.setCode(code);
+        StringBuilder code=new StringBuilder();
+        code.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        code.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n");
+        code.append("<mapper namespace=\"Common\">\n\n");
+        code.append("    <sql id=\"joinClause\">\n");
+        code.append("        <foreach collection=\"leftJoinList\" item=\"joinInfo\">\n");
+        code.append("            left join ${joinInfo.rightTable} on ${joinInfo.leftTable}.${joinInfo.leftKey}=${joinInfo.rightTable}.${joinInfo.rightKey}\n");
+        code.append("        </foreach>\n");
+        code.append("    </sql>\n");
+        code.append("\n");
+        code.append("    <sql id=\"whereClause\">\n");
+        code.append("        <where>\n");
+        code.append("            <foreach collection=\"criterionList\" item=\"criterion\">\n");
+        code.append("                <if test=\"criterion.prefix!=null\">\n");
+        code.append("                    ${criterion.prefix}\n");
+        code.append("                </if>\n");
+        code.append("                <if test=\"criterion.table!=null\">\n");
+        code.append("                    ${criterion.table}.${criterion.field}\n");
+        code.append("                </if>\n");
+        code.append("                <choose>\n");
+        code.append("                    <when test=\"criterion.valueType=='noValue'\">\n");
+        code.append("                        ${criterion.condition}\n");
+        code.append("                    </when>\n");
+        code.append("                    <when test=\"criterion.valueType=='singleValue'\">\n");
+        code.append("                        ${criterion.condition} #{criterion.value}\n");
+        code.append("                    </when>\n");
+        code.append("                    <when test=\"criterion.valueType=='betweenValue'\">\n");
+        code.append("                        ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n");
+        code.append("                    </when>\n");
+        code.append("                    <when test=\"criterion.valueType=='listValue'\">\n");
+        code.append("                        ${criterion.condition}\n");
+        code.append("                        <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n");
+        code.append("                            #{listItem}\n");
+        code.append("                        </foreach>\n");
+        code.append("                    </when>\n");
+        code.append("                </choose>\n");
+        code.append("            </foreach>\n");
+        code.append("        </where>\n");
+        code.append("    </sql>\n");
+        code.append("\n");
+        code.append("    <sql id=\"footClause\">\n");
+        code.append("        <if test=\"orderList!=null\">\n");
+        code.append("            order by\n");
+        code.append("            <foreach collection=\"orderList\" item=\"orderItem\" separator=\",\">\n");
+        code.append("                ${criterion.table}.${criterion.field} ${criterion.condition}\n");
+        code.append("            </foreach>\n");
+        code.append("        </if>\n");
+        code.append("        <if test=\"limitNum!=null\">\n");
+        code.append("            limit\n");
+        code.append("            <if test=\"limitStart!=null\">\n");
+        code.append("                #{limitStart},\n");
+        code.append("            </if>\n");
+        code.append("            #{limitNum}\n");
+        code.append("        </if>\n");
+        code.append("    </sql>\n");
+        code.append("\n");
+        code.append("    <sql id=\"exampleClause\">\n");
+        code.append("        <include refid=\"Common.joinClause\"></include>\n");
+        code.append("        <include refid=\"Common.whereClause\"></include>\n");
+        code.append("        <include refid=\"Common.footClause\"></include>\n");
+        code.append("    </sql>\n");
+        code.append("</mapper>\n");
+        common.setCode(code.toString());
         common.setName("Common");
         return common;
     }
