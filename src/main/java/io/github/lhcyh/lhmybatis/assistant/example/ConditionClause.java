@@ -139,7 +139,7 @@ public class ConditionClause<Model> {
      * @param field 左表类里的右表属性
      * @return 如果 field 属性为连表属性则返回连表信息，否则返回 null
      */
-    private JoinInfo getJoinInfo(Class tClass,Field field){
+    protected JoinInfo getJoinInfo(Class tClass,Field field){
         LeftJoin annotation=field.getAnnotation(LeftJoin.class);
         if(annotation==null){
             return null;
@@ -152,38 +152,6 @@ public class ConditionClause<Model> {
         );
         return joinInfo;
     }
-
-//    /**
-//     * 判断field属性是否为要连的表
-//     * @param field
-//     * @return
-//     */
-//    private Boolean isLeftJoinProperty(Field field){
-////        if(model instanceof Enum){
-////            return false;
-////        }
-//
-//        if(field.getType().isEnum()){
-//            return false;
-//        }
-//
-//        if(field.getType().getClassLoader()==null){
-//            return false;
-//        }else {
-//            return true;
-//        }
-//
-//        // 获取包名
-////        String modelPackage=model.getClass().getPackage().getName();
-////        modelPackage=modelPackage.substring(0,modelPackage.lastIndexOf('.'));
-////        String fieldPackage=field.getType().getPackage().getName();
-////        fieldPackage=fieldPackage.substring(0,fieldPackage.lastIndexOf('.'));
-////        if(modelPackage.equals(fieldPackage)){
-////            return true;
-////        }else {
-////            return false;
-////        }
-//    }
 
     /**
      * 驼峰字符串转化为下划线字符串
@@ -224,7 +192,7 @@ public class ConditionClause<Model> {
      * @param model
      * @return
      */
-    private List<Field> getFieldList(Object model){
+    protected List<Field> getFieldList(Object model){
         Class modelClass=model.getClass();
         List<Field> fieldList=new ArrayList<>();
         while (true){
@@ -255,7 +223,7 @@ public class ConditionClause<Model> {
      * @param field 属性
      * @return
      */
-    private Object getValue(Object model,Field field){
+    protected Object getValue(Object model,Field field){
         Object value=null;
         Method m = getGetMethod(model,field);
         try {
@@ -268,21 +236,21 @@ public class ConditionClause<Model> {
         return value;
     }
 
-    private String handlePrefix(Prefix prefix){
-        if(prefix==null){
-            return null;
-        }
-        if(criterionList.size()>0){
-            Criterion criterion=criterionList.get(criterionList.size()-1);
-            Condition condition=Condition.getConditionByValue(criterion.getCondition());
-            if(condition==Condition.LeftParenthesis){
-                return null;
-            }else {
-                return prefix.name();
-            }
-        }
-        return prefix.name();
-    }
+//    private String handlePrefix(Prefix prefix){
+//        if(prefix==null){
+//            return null;
+//        }
+//        if(criterionList.size()>0){
+//            Criterion criterion=criterionList.get(criterionList.size()-1);
+//            Condition condition=Condition.getConditionByValue(criterion.getCondition());
+//            if(condition==Condition.LeftParenthesis){
+//                return null;
+//            }else {
+//                return prefix.name();
+//            }
+//        }
+//        return prefix.name();
+//    }
 
     private String getAttribute(Class tClass,Field field){
         String tableName=getTableName(tClass);
@@ -302,7 +270,7 @@ public class ConditionClause<Model> {
      * @param condition
      * @return
      */
-    private Criterion createCriterion(Prefix prefix, Class tClass, Field field, Condition condition){
+    protected Criterion createCriterion(Prefix prefix, Class tClass, Field field, Condition condition){
         Criterion criterion=new Criterion();
 //        String tableName=getTableName(tClass);
 //        criterion.setTable(tableName);
@@ -310,7 +278,7 @@ public class ConditionClause<Model> {
 //        criterion.setField(fieldName);
         String attribute=getAttribute(tClass,field);
         criterion.setAttribute(attribute);
-        criterion.setPrefix(handlePrefix(prefix));
+        criterion.setPrefix(Utils.handlePrefix(criterionList,prefix));
         if(condition!=null){
             criterion.setCondition(condition.getValue());
             criterion.setValueType(condition.getValueType().getValue());
@@ -318,21 +286,21 @@ public class ConditionClause<Model> {
         return criterion;
     }
 
-    /**
-     * 载入查询准则
-     * @param condition 判断条件（无表属性无值条件）
-     */
-    private void loadCriterion(Prefix prefix,Condition condition){
-        if(condition.getValueType()!= ValueType.NoValue){
-            new Exception("Parameter error").printStackTrace();
-            return;
-        }
-        Criterion criterion=new Criterion();
-        criterion.setCondition(condition.getValue());
-        criterion.setValueType(condition.getValueType().getValue());
-        criterion.setPrefix(handlePrefix(prefix));
-        criterionList.add(criterion);
-    }
+//    /**
+//     * 载入查询准则
+//     * @param condition 判断条件（无表属性无值条件）
+//     */
+//    private void loadCriterion(Prefix prefix,Condition condition){
+//        if(condition.getValueType()!= ValueType.NoValue){
+//            new Exception("Parameter error").printStackTrace();
+//            return;
+//        }
+//        Criterion criterion=new Criterion();
+//        criterion.setCondition(condition.getValue());
+//        criterion.setValueType(condition.getValueType().getValue());
+//        criterion.setPrefix(handlePrefix(prefix));
+//        criterionList.add(criterion);
+//    }
 
     /**
      * 载入查询准则
@@ -543,14 +511,6 @@ public class ConditionClause<Model> {
      */
     public void orIn(List<Model> modelList){
         loadCriterion(Prefix.OR,(List<Object>) modelList, Condition.In);
-    }
-
-    /**
-     * 添加左括号
-     * @return
-     */
-    public void andLeftParenthesis(){
-        loadCriterion(Prefix.AND,Condition.LeftParenthesis);
     }
 
     /**
