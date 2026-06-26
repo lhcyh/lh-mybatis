@@ -5,27 +5,37 @@ package io.github.lhcyh.lhmybatis.assistant.example;
  */
 public class Criterion{
     private String prefix;
-    private String table;
-    private String field;
+//    private String table;
+//    private String field;
+    private String attribute;
     private Object value;
     private Object secondValue;
     private String valueType;
     private String condition;
 
-    public String getTable() {
-        return table;
+//    public String getTable() {
+//        return table;
+//    }
+//
+//    public void setTable(String table) {
+//        this.table = table;
+//    }
+//
+//    public String getField() {
+//        return field;
+//    }
+//
+//    public void setField(String field) {
+//        this.field = field;
+//    }
+
+
+    public String getAttribute() {
+        return attribute;
     }
 
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
     }
 
     public Object getValue() {
