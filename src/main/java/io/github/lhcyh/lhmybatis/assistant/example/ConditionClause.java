@@ -39,7 +39,7 @@ public class ConditionClause<Model> {
         // 如果是布尔类型，添加基于 "is" 前缀的可能名称
         if (field.getType() == boolean.class || field.getType() == Boolean.class) {
             possibleMethodNames.add("is" + capitalize(fieldName));
-            possibleMethodNames.add("is" + fieldName); // 处理 istSum -> isistSum 等情况
+            possibleMethodNames.add("is" + fieldName); // 处理 tSum -> istSum 等情况
         }
 
         // 循环尝试列表中的每个方法名
@@ -181,7 +181,7 @@ public class ConditionClause<Model> {
 
     /**
      * 获取属性列表
-     * @param model
+     * @param model 属性值模版
      * @return
      */
     protected List<Field> getFieldList(Object model){
@@ -211,7 +211,7 @@ public class ConditionClause<Model> {
 
     /**
      * 获取属性值
-     * @param model
+     * @param model 属性值模版
      * @param field 属性
      * @return
      */
