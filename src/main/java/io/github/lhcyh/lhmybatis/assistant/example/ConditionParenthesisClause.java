@@ -22,7 +22,6 @@ public class ConditionParenthesisClause<Model> extends ConditionClause<Model>{
 
     /**
      * 添加右括号
-     * @return
      */
     public void rightParenthesis(){
         loadCriterion(null,Condition.RightParenthesis);
@@ -30,7 +29,6 @@ public class ConditionParenthesisClause<Model> extends ConditionClause<Model>{
 
     /**
      * 添加左括号
-     * @return
      */
     public void orLeftParenthesis(){
         loadCriterion(Prefix.OR,Condition.LeftParenthesis);
@@ -38,7 +36,6 @@ public class ConditionParenthesisClause<Model> extends ConditionClause<Model>{
 
     /**
      * 添加左括号
-     * @return
      */
     public void andLeftParenthesis(){
         loadCriterion(Prefix.AND,Condition.LeftParenthesis);

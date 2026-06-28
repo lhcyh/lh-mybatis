@@ -182,7 +182,7 @@ public class ConditionClause<Model> {
     /**
      * 获取属性列表
      * @param model 属性值模版
-     * @return
+     * @return 属性列表
      */
     protected List<Field> getFieldList(Object model){
         Class modelClass=model.getClass();
@@ -213,7 +213,7 @@ public class ConditionClause<Model> {
      * 获取属性值
      * @param model 属性值模版
      * @param field 属性
-     * @return
+     * @return 属性值
      */
     protected Object getValue(Object model,Field field){
         Object value=null;
@@ -274,10 +274,11 @@ public class ConditionClause<Model> {
 
     /**
      * 创建查询准则
-     * @param tClass
-     * @param field
-     * @param condition
-     * @return
+     * @param prefix 前缀（and或or）
+     * @param tClass 模版类
+     * @param field 属性列
+     * @param condition 条件
+     * @return 查询准则
      */
     protected Criterion createCriterion(Prefix prefix, Class tClass, Field field, Condition condition){
         Criterion criterion=new Criterion();
@@ -416,7 +417,6 @@ public class ConditionClause<Model> {
     /**
      * 添加判断为null的条件，model内不为null的属性作为判空条件
      * @param model
-     * @return
      */
     public void orIsNull(Model model){
         loadCriterion(Prefix.OR,model, Condition.IsNull);
@@ -425,7 +425,6 @@ public class ConditionClause<Model> {
     /**
      * 添加判断不为null的条件，model内不为null的属性作为判断不为null条件
      * @param model
-     * @return
      */
     public void orIsNotNull(Model model){
         loadCriterion(Prefix.OR,model, Condition.IsNotNull);
@@ -435,7 +434,6 @@ public class ConditionClause<Model> {
      * 添加between条件，model内不为null的属性作为between条件
      * @param model1
      * @param model2
-     * @return
      */
     public void orBetween(Model model1,Model model2){
         loadCriterion(Prefix.OR,model1,model2, Condition.Between);
@@ -444,7 +442,6 @@ public class ConditionClause<Model> {
     /**
      * 添加等于条件，model内不为null的属性作为等于条件值
      * @param model
-     * @return
      */
     public void orEqualTo(Model model){
         loadCriterion(Prefix.OR,model, Condition.EqualTo);
@@ -453,7 +450,6 @@ public class ConditionClause<Model> {
     /**
      * 添加不等于条件，model内不为null的属性作为不等于条件的值
      * @param model
-     * @return
      */
     public void orNotEqualTo(Model model){
         loadCriterion(Prefix.OR,model, Condition.NotEqualTo);
@@ -462,7 +458,6 @@ public class ConditionClause<Model> {
     /**
      * 添加大于条件，model内不为null的属性作为大于条件的值
      * @param model
-     * @return
      */
     public void orGreaterThan(Model model){
         loadCriterion(Prefix.OR,model, Condition.GreaterThan);
@@ -471,7 +466,6 @@ public class ConditionClause<Model> {
     /**
      * 添加大于或等于条件，model内不为null的属性作为大于或等于条件的值
      * @param model
-     * @return
      */
     public void orGreaterThanOrEqualTo(Model model){
         loadCriterion(Prefix.OR,model, Condition.GreaterThanOrEqualTo);
@@ -480,7 +474,6 @@ public class ConditionClause<Model> {
     /**
      * 添加小于条件，model内不为null的属性作为小于条件
      * @param model
-     * @return
      */
     public void orLessThan(Model model){
         loadCriterion(Prefix.OR,model, Condition.LessThan);
@@ -489,7 +482,6 @@ public class ConditionClause<Model> {
     /**
      * 添加小于或等于条件，model内不为null的属性作为小于或等于条件
      * @param model
-     * @return
      */
     public void orLessThanOrEqualTo(Model model){
         loadCriterion(Prefix.OR,model, Condition.LessThanOrEqualTo);
@@ -498,7 +490,6 @@ public class ConditionClause<Model> {
     /**
      * 添加 like 条件，model内不为null的属性作为 like 条件
      * @param model
-     * @return
      */
     public void orLike(Model model){
         loadCriterion(Prefix.OR,model, Condition.Like);
@@ -507,7 +498,6 @@ public class ConditionClause<Model> {
     /**
      * 添加 not like 条件，model内不为 null 的属性作为 not like 条件的值
      * @param model
-     * @return
      */
     public void orNotLike(Model model){
         loadCriterion(Prefix.OR,model, Condition.NotLike);
@@ -516,7 +506,6 @@ public class ConditionClause<Model> {
     /**
      * 添加in条件，model内不为null的属性作为in条件
      * @param modelList
-     * @return
      */
     public void orIn(List<Model> modelList){
         loadCriterion(Prefix.OR,(List<Object>) modelList, Condition.In);
@@ -525,7 +514,6 @@ public class ConditionClause<Model> {
     /**
      * 添加判断为null的条件，model内不为null的属性作为判空条件
      * @param model
-     * @return
      */
     public void andIsNull(Model model){
         loadCriterion(Prefix.AND,model, Condition.IsNull);
@@ -534,7 +522,6 @@ public class ConditionClause<Model> {
     /**
      * 添加判断不为null的条件，model内不为null的属性作为判断不为null条件
      * @param model
-     * @return
      */
     public void andIsNotNull(Model model){
         loadCriterion(Prefix.AND,model, Condition.IsNotNull);
@@ -544,7 +531,6 @@ public class ConditionClause<Model> {
      * 添加between条件，model内不为null的属性作为between条件
      * @param model1
      * @param model2
-     * @return
      */
     public void andBetween(Model model1,Model model2){
         loadCriterion(Prefix.AND,model1,model2, Condition.Between);
@@ -553,7 +539,6 @@ public class ConditionClause<Model> {
     /**
      * 添加等于条件，model内不为null的属性作为等于条件值
      * @param model
-     * @return
      */
     public void andEqualTo(Model model){
         loadCriterion(Prefix.AND,model, Condition.EqualTo);
@@ -562,7 +547,6 @@ public class ConditionClause<Model> {
     /**
      * 添加不等于条件，model内不为null的属性作为不等于条件的值
      * @param model
-     * @return
      */
     public void andNotEqualTo(Model model){
         loadCriterion(Prefix.AND,model, Condition.NotEqualTo);
@@ -571,7 +555,6 @@ public class ConditionClause<Model> {
     /**
      * 添加大于条件，model内不为null的属性作为大于条件的值
      * @param model
-     * @return
      */
     public void andGreaterThan(Model model){
         loadCriterion(Prefix.AND,model, Condition.GreaterThan);
@@ -580,7 +563,6 @@ public class ConditionClause<Model> {
     /**
      * 添加大于或等于条件，model内不为null的属性作为大于或等于条件的值
      * @param model
-     * @return
      */
     public void andGreaterThanOrEqualTo(Model model){
         loadCriterion(Prefix.AND,model, Condition.GreaterThanOrEqualTo);
@@ -589,7 +571,6 @@ public class ConditionClause<Model> {
     /**
      * 添加小于条件，model内不为null的属性作为小于条件
      * @param model
-     * @return
      */
     public void andLessThan(Model model){
         loadCriterion(Prefix.AND,model, Condition.LessThan);
@@ -598,7 +579,6 @@ public class ConditionClause<Model> {
     /**
      * 添加小于或等于条件，model内不为null的属性作为小于或等于条件
      * @param model
-     * @return
      */
     public void andLessThanOrEqualTo(Model model){
         loadCriterion(Prefix.AND,model, Condition.LessThanOrEqualTo);
@@ -607,7 +587,6 @@ public class ConditionClause<Model> {
     /**
      * 添加 like 条件，model内不为null的属性作为 like 条件
      * @param model
-     * @return
      */
     public void andLike(Model model){
         loadCriterion(Prefix.AND,model, Condition.Like);
@@ -616,7 +595,6 @@ public class ConditionClause<Model> {
     /**
      * 添加 not like 条件，model内不为 null 的属性作为 not like 条件的值
      * @param model
-     * @return
      */
     public void andNotLike(Model model){
         loadCriterion(Prefix.AND,model, Condition.NotLike);
@@ -625,7 +603,6 @@ public class ConditionClause<Model> {
     /**
      * 添加in条件，model内不为null的属性作为in条件
      * @param modelList
-     * @return
      */
     public void andIn(List<Model> modelList){
         loadCriterion(Prefix.AND,(List<Object>) modelList, Condition.In);

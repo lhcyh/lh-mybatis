@@ -59,7 +59,6 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
     /**
      * 根据model里不为null的属性排序，排序方式默认为ASC（正序）
      * @param model
-     * @return
      */
     public void orderBy(Model model){
         orderBy(model,Order.ASC);
@@ -69,7 +68,6 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
      * 根据model里不为null的属性排序
      * @param model
      * @param order 排序方式，ASC（正序），DESC（倒序）
-     * @return
      */
     public void orderBy(Model model,Order order){
         if(orderList==null){
