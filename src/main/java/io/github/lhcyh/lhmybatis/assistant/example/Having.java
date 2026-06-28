@@ -1,182 +1,153 @@
 package io.github.lhcyh.lhmybatis.assistant.example;
 
-import io.github.lhcyh.lhmybatis.Example;
-
+import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public interface Having<Model> {
-    /**
-     * 添加右括号
-     * @return
-     */
-    public Having<Model> rightParenthesis();
+public class Having<Model> extends ConditionParenthesisClause<Model> {
+    private ConditionClause sumCondition;
+    private ConditionClause countCondition;
+    private ConditionClause avgCondition;
+    private ConditionClause maxCondition;
+    private ConditionClause minCondition;
+    private Set<String> selectList;
+    private String gbAttribute;
 
-    /**
-     * 添加左括号
-     * @return
-     */
-    public Example<Model> orLeftParenthesis();
+    public Having(List<Criterion> criterionList, Set<JoinInfo> joinInfo){
+        super(criterionList,joinInfo);
+        selectList=new HashSet<>();
+    }
 
-    /**
-     * 添加判断为null的条件，model内不为null的属性作为判空条件
-     * @param model
-     * @return
-     */
-    public Example<Model> orIsNull(Aggregate aggregate,Model model);
+    private String getTagByAttribute(String attribute){
+        String tag=attribute.replaceAll("`","");
+        tag=tag.replaceAll("\\.","_");
+        return tag;
+    }
 
-    /**
-     * 添加判断不为null的条件，model内不为null的属性作为判断不为null条件
-     * @param model
-     * @return
-     */
-    public Example<Model> orIsNotNull(Aggregate aggregate,Model model);
+    private String handleAttribute(String agg,String attribute){
+        String tag=agg.toLowerCase()+"_"+getTagByAttribute(attribute);
+        attribute="COALESCE("+agg+"("+attribute+"),0)";
+        selectList.add(attribute+" AS "+tag);
+        return attribute;
+    }
 
-    /**
-     * 添加between条件，model内不为null的属性作为between条件
-     * @param model1
-     * @param model2
-     * @return
-     */
-    public Example<Model> orBetween(Aggregate aggregate,Model model1,Model model2);
+    private void handleJoinInfo(JoinInfo joinInfo){
+        if(gbAttribute==null&&joinInfo!=null){
+            gbAttribute="`"+joinInfo.getLeftTable()+"`."+joinInfo.getLeftKey();
+        }
+    }
 
-    /**
-     * 添加等于条件，model内不为null的属性作为等于条件值
-     * @param model
-     * @return
-     */
-    public Example<Model> orEqualTo(Model model);
+    public ConditionClause<Model> sum(){
+        if(sumCondition==null){
+            sumCondition=new ConditionClause<Model>(getCriterionList(),getJoinInfoList()){
+                @Override
+                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+                    handleJoinInfo(joinInfo);
+                    return joinInfo;
+                }
 
-    /**
-     * 添加不等于条件，model内不为null的属性作为不等于条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> orNotEqualTo(Model model);
+                @Override
+                protected String getAttribute(Class tClass, Field field) {
+                    String attribute=super.getAttribute(tClass, field);
+                    return handleAttribute("SUM",attribute);
+                }
+            };
+        }
+        return sumCondition;
+    }
 
-    /**
-     * 添加大于条件，model内不为null的属性作为大于条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> orGreaterThan(Model model);
+    public ConditionClause<Model> count(){
+        if(countCondition==null){
+            countCondition=new ConditionClause<Model>(getCriterionList(),getJoinInfoList()){
+                @Override
+                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+                    handleJoinInfo(joinInfo);
+                    return joinInfo;
+                }
 
-    /**
-     * 添加大于或等于条件，model内不为null的属性作为大于或等于条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> orGreaterThanOrEqualTo(Model model);
+                @Override
+                protected String getAttribute(Class tClass, Field field) {
+                    String attribute= super.getAttribute(tClass, field);
+                    return handleAttribute("COUNT",attribute);
+                }
+            };
+        }
+        return countCondition;
+    }
 
-    /**
-     * 添加小于条件，model内不为null的属性作为小于条件
-     * @param model
-     * @return
-     */
-    public Example<Model> orLessThan(Model model);
+    public ConditionClause<Model> avg(){
+        if(avgCondition==null){
+            avgCondition=new ConditionClause(getCriterionList(),getJoinInfoList()){
+                @Override
+                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+                    handleJoinInfo(joinInfo);
+                    return joinInfo;
+                }
 
-    /**
-     * 添加小于或等于条件，model内不为null的属性作为小于或等于条件
-     * @param model
-     * @return
-     */
-    public Example<Model> orLessThanOrEqualTo(Model model);
+                @Override
+                protected String getAttribute(Class tClass, Field field) {
+                    String attribute= super.getAttribute(tClass, field);
+                    return handleAttribute("AVG",attribute);
+                }
+            };
+        }
+        return avgCondition;
+    }
 
-    /**
-     * 添加 like 条件，model内不为null的属性作为 like 条件
-     * @param model
-     * @return
-     */
-    public Example<Model> orLike(Model model);
+    public ConditionClause<Model> max(){
+        if(maxCondition==null){
+            maxCondition=new ConditionClause(getCriterionList(),getJoinInfoList()){
+                @Override
+                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+                    handleJoinInfo(joinInfo);
+                    return joinInfo;
+                }
 
-    /**
-     * 添加 not like 条件，model内不为 null 的属性作为 not like 条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> orNotLike(Model model);
+                @Override
+                protected String getAttribute(Class tClass, Field field) {
+                    String attribute= super.getAttribute(tClass, field);
+                    return handleAttribute("MAX",attribute);
+                }
+            };
+        }
+        return maxCondition;
+    }
 
-    /**
-     * 添加in条件，model内不为null的属性作为in条件
-     * @param modelList
-     * @return
-     */
-    public Example<Model> orIn(List<Model> modelList);
+    public ConditionClause<Model> min(){
+        if(minCondition==null){
+            minCondition=new ConditionClause(getCriterionList(),getJoinInfoList()){
+                @Override
+                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+                    handleJoinInfo(joinInfo);
+                    return joinInfo;
+                }
 
-    /**
-     * 添加左括号
-     * @return
-     */
-    public Example<Model> andLeftParenthesis();
+                @Override
+                protected String getAttribute(Class tClass, Field field) {
+                    String attribute= super.getAttribute(tClass, field);
+                    return handleAttribute("MIN",attribute);
+                }
+            };
+        }
+        return minCondition;
+    }
 
-    /**
-     * 添加判断为null的条件，model内不为null的属性作为判空条件
-     * @param model
-     * @return
-     */
-    public Example<Model> andIsNull(Model model);
+    public String getAggregateSelect(){
+        StringBuilder select=new StringBuilder();
+        for(String sl:selectList){
+            select.append(",");
+            select.append(sl);
+        }
+        return select.toString();
+    }
 
-    /**
-     * 添加判断不为null的条件，model内不为null的属性作为判断不为null条件
-     * @param model
-     * @return
-     */
-    public Example<Model> andIsNotNull(Model model);
-
-    /**
-     * 添加between条件，model内不为null的属性作为between条件
-     * @param model1
-     * @param model2
-     * @return
-     */
-    public Example<Model> andBetween(Model model1,Model model2);
-
-    /**
-     * 添加等于条件，model内不为null的属性作为等于条件值
-     * @param model
-     * @return
-     */
-    public Example<Model> andEqualTo(Model model);
-
-    /**
-     * 添加不等于条件，model内不为null的属性作为不等于条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> andNotEqualTo(Model model);
-
-    /**
-     * 添加大于条件，model内不为null的属性作为大于条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> andGreaterThan(Model model);
-
-    /**
-     * 添加大于或等于条件，model内不为null的属性作为大于或等于条件的值
-     * @param model
-     * @return
-     */
-    public Example<Model> andGreaterThanOrEqualTo(Model model);
-
-    /**
-     * 添加小于条件，model内不为null的属性作为小于条件
-     * @param model
-     * @return
-     */
-    public Example<Model> andLessThan(Model model);
-
-    /**
-     * 添加小于或等于条件，model内不为null的属性作为小于或等于条件
-     * @param model
-     * @return
-     */
-    public Example<Model> andLessThanOrEqualTo(Model model);
-
-
-    /**
-     * 添加in条件，model内不为null的属性作为in条件
-     * @param modelList
-     * @return
-     */
-    public Example<Model> andIn(List<Model> modelList);
+    public String getGbAttribute() {
+        return gbAttribute;
+    }
 }

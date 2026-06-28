@@ -497,11 +497,14 @@ public class TableHandle implements Serializable {
 
     private String getGetListByExampleXml(Project project,String fill){
         String upName= Utils.underscoreToCamel(name,true);
-        String xml=fill+"<select id=\"get"+upName+"ListByExample\" parameterType=\""+"io.github.lhcyh.lhmybatis.Example\" "+getResultXml(project)+">\n";
-        xml+=fill+"    select * from `"+name+"`\n";
-        xml+=fill+"    <include refid=\"Common.exampleClause\"></include>\n";
-        xml+=fill+"</select>\n";
-        return xml;
+        StringBuilder xml=new StringBuilder();
+        xml.append(fill+"<select id=\"get"+upName+"ListByExample\" parameterType=\""+"io.github.lhcyh.lhmybatis.Example\" "+getResultXml(project)+">\n");
+        xml.append(fill+"    SELECT `"+name+"`.*\n");
+        xml.append(fill+"    <include refid=\"Common.aggSelectClause\"></include>\n");
+        xml.append(fill+"    FROM `"+name+"`\n");
+        xml.append(fill+"    <include refid=\"Common.exampleClause\"></include>\n");
+        xml.append(fill+"</select>\n");
+        return xml.toString();
     }
 
     public String getXml(Project project){

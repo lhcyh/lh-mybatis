@@ -1,11 +1,11 @@
 package io.github.lhcyh.lhmybatis.assistant.example;
 
 import java.util.List;
+import java.util.Set;
 
-public class Parenthesis {
-    private List<Criterion> criterionList;
-    public Parenthesis(List<Criterion> criterionList){
-        this.criterionList=criterionList;
+public class ConditionParenthesisClause<Model> extends ConditionClause<Model>{
+    public ConditionParenthesisClause(List<Criterion> criterionList, Set<JoinInfo> joinInfoSet) {
+        super(criterionList, joinInfoSet);
     }
 
     /**
@@ -16,8 +16,8 @@ public class Parenthesis {
         Criterion criterion=new Criterion();
         criterion.setCondition(condition.getValue());
         criterion.setValueType(condition.getValueType().getValue());
-        criterion.setPrefix(Utils.handlePrefix(criterionList,prefix));
-        criterionList.add(criterion);
+        criterion.setPrefix(handlePrefix(prefix));
+        getCriterionList().add(criterion);
     }
 
     /**

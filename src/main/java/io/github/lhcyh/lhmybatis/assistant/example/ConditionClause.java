@@ -4,9 +4,7 @@ import io.github.lhcyh.lhmybatis.*;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -32,38 +30,32 @@ public class ConditionClause<Model> {
         }
 
         String fieldName = field.getName();
+        List<String> possibleMethodNames = new ArrayList<>();
 
-        // 确定标准方法名（首字母大写）
-        String standardMethodName;
+        // 添加基于 "get" 前缀的可能名称 (适用于所有类型)
+        possibleMethodNames.add("get" + capitalize(fieldName));
+        possibleMethodNames.add("get" + fieldName); // 处理 tSum -> gettSum 等情况
+
+        // 如果是布尔类型，添加基于 "is" 前缀的可能名称
         if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-            // 布尔类型使用 is 前缀
-            standardMethodName = "is" + capitalize(fieldName);
-        } else {
-            // 其他类型使用 get 前缀
-            standardMethodName = "get" + capitalize(fieldName);
+            possibleMethodNames.add("is" + capitalize(fieldName));
+            possibleMethodNames.add("is" + fieldName); // 处理 istSum -> isistSum 等情况
         }
 
-        try {
-            // 首先尝试标准的首字母大写形式
-            return model.getClass().getMethod(standardMethodName);
-        } catch (NoSuchMethodException e) {
-            // 如果标准形式失败，再尝试直接在字段名前加前缀（用于处理特殊情况，如 tSum -> gettSum）
-            String directMethodName;
-            if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                directMethodName = "is" + fieldName;
-            } else {
-                directMethodName = "get" + fieldName;
-            }
-
+        // 循环尝试列表中的每个方法名
+        for (String methodName : possibleMethodNames) {
             try {
-                return model.getClass().getMethod(directMethodName);
-            } catch (NoSuchMethodException ex) {
-                // 两种方式都失败了，记录错误或抛出异常
-                System.out.println("Getter method not found for field: " + fieldName +
-                        ". Tried '" + standardMethodName + "' and '" + directMethodName + "'");
-                return null; // 或者根据需要抛出异常
+                return model.getClass().getMethod(methodName);
+            } catch (NoSuchMethodException e) {
+                // 捕获异常并继续尝试下一个名称，无需做任何操作
+                // 可以在此处添加调试日志 if (debugEnabled) log.debug(...)
             }
         }
+
+        // 所有可能的名称都尝试过，但没有找到
+        System.out.println("Getter method not found for field: " + fieldName +
+                ". Tried methods: " + possibleMethodNames);
+        return null; // 或者根据需要抛出异常
     }
 
     /**
@@ -252,7 +244,7 @@ public class ConditionClause<Model> {
 //        return prefix.name();
 //    }
 
-    private String getAttribute(Class tClass,Field field){
+    protected String getAttribute(Class tClass,Field field){
         String tableName=getTableName(tClass);
         String fieldName=getFiledName(field);
         StringBuilder attribute=new StringBuilder();
@@ -261,6 +253,23 @@ public class ConditionClause<Model> {
         attribute.append("`.");
         attribute.append(fieldName);
         return attribute.toString();
+    }
+
+    protected String handlePrefix(Prefix prefix){
+        if(prefix==null){
+            return null;
+        }
+        if(criterionList.size()>0){
+            Criterion criterion=criterionList.get(criterionList.size()-1);
+            Condition condition=Condition.getConditionByValue(criterion.getCondition());
+            if(condition==Condition.LeftParenthesis){
+                return null;
+            }else {
+                return prefix.name();
+            }
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -278,7 +287,7 @@ public class ConditionClause<Model> {
 //        criterion.setField(fieldName);
         String attribute=getAttribute(tClass,field);
         criterion.setAttribute(attribute);
-        criterion.setPrefix(Utils.handlePrefix(criterionList,prefix));
+        criterion.setPrefix(handlePrefix(prefix));
         if(condition!=null){
             criterion.setCondition(condition.getValue());
             criterion.setValueType(condition.getValueType().getValue());
