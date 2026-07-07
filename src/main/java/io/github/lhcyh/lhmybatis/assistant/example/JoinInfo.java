@@ -10,8 +10,10 @@ public class JoinInfo{
     private String leftKey;
     private String rightTable;
     private String rightKey;
+    private String key;
+    private String value;
 
-    public JoinInfo(String leftTable, String leftKey, String rightTable, String rightKey) {
+    public JoinInfo(String leftTable, String leftKey, String rightTable, String rightKey,String key,String value) {
         this.leftTable = leftTable;
         this.leftKey = leftKey;
         this.rightTable = rightTable;
@@ -48,5 +50,13 @@ public class JoinInfo{
 
     public String getRightKey() {
         return rightKey;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

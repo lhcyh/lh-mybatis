@@ -136,11 +136,20 @@ public class ConditionClause<Model> {
         if(annotation==null){
             return null;
         }
+        String key=null;
+        String value=null;
+        LeftJoinKv leftJoinKv=field.getAnnotation(LeftJoinKv.class);
+        if(leftJoinKv!=null){
+            key=leftJoinKv.key();
+            value=leftJoinKv.value();
+        }
         JoinInfo joinInfo=new JoinInfo(
                 getTableName(tClass),
                 annotation.leftKey(),
                 getTableName(field),
-                annotation.rightKey()
+                annotation.rightKey(),
+                key,
+                value
         );
         return joinInfo;
     }
