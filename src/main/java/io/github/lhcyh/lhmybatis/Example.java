@@ -1,11 +1,7 @@
 package io.github.lhcyh.lhmybatis;
 
 import io.github.lhcyh.lhmybatis.assistant.example.*;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.core.io.ClassPathResource;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -26,7 +22,7 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
     private Object extend;
 
     public Example(){
-        super(new ArrayList<>(),new HashSet<>());
+        super(new ArrayList<>(),new LinkedHashSet<>());
     }
 
     /**
@@ -46,8 +42,8 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
             }
             JoinInfo joinInfo=getJoinInfo(model.getClass(),field);
             if(joinInfo!=null){
-                loadCriterion(list,value,pValue);
                 getJoinInfoList().add(joinInfo);
+                loadCriterion(list,value,pValue);
             }else {
                 Criterion criterion=createCriterion(null,model.getClass(),field,null);
                 criterion.setValue(pValue);

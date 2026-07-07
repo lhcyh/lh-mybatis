@@ -18,6 +18,8 @@ public class JoinInfo{
         this.leftKey = leftKey;
         this.rightTable = rightTable;
         this.rightKey = rightKey;
+        this.key=key;
+        this.value=value;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     private ConditionClause maxCondition;
     private ConditionClause minCondition;
     private Set<String> selectList;
-    private String gbAttribute;
+//    private String gbAttribute;
 
     public Having(Set<JoinInfo> joinInfo){
         super(new ArrayList<>(),joinInfo);
@@ -33,21 +33,21 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
         return attribute;
     }
 
-    private void handleJoinInfo(JoinInfo joinInfo){
-        if(gbAttribute==null&&joinInfo!=null){
-            gbAttribute="`"+joinInfo.getLeftTable()+"`."+joinInfo.getLeftKey();
-        }
-    }
+//    private void handleJoinInfo(JoinInfo joinInfo){
+//        if(gbAttribute==null&&joinInfo!=null){
+//            gbAttribute="`"+joinInfo.getLeftTable()+"`."+joinInfo.getLeftKey();
+//        }
+//    }
 
     public ConditionClause<Model> sum(){
         if(sumCondition==null){
             sumCondition=new ConditionClause<Model>(getCriterionList(),getJoinInfoList()){
-                @Override
-                protected JoinInfo getJoinInfo(Class tClass, Field field) {
-                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
-                    handleJoinInfo(joinInfo);
-                    return joinInfo;
-                }
+//                @Override
+//                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+//                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+//                    handleJoinInfo(joinInfo);
+//                    return joinInfo;
+//                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -62,12 +62,12 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     public ConditionClause<Model> count(){
         if(countCondition==null){
             countCondition=new ConditionClause<Model>(getCriterionList(),getJoinInfoList()){
-                @Override
-                protected JoinInfo getJoinInfo(Class tClass, Field field) {
-                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
-                    handleJoinInfo(joinInfo);
-                    return joinInfo;
-                }
+//                @Override
+//                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+//                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+//                    handleJoinInfo(joinInfo);
+//                    return joinInfo;
+//                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -82,12 +82,12 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     public ConditionClause<Model> avg(){
         if(avgCondition==null){
             avgCondition=new ConditionClause(getCriterionList(),getJoinInfoList()){
-                @Override
-                protected JoinInfo getJoinInfo(Class tClass, Field field) {
-                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
-                    handleJoinInfo(joinInfo);
-                    return joinInfo;
-                }
+//                @Override
+//                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+//                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+//                    handleJoinInfo(joinInfo);
+//                    return joinInfo;
+//                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -102,12 +102,12 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     public ConditionClause<Model> max(){
         if(maxCondition==null){
             maxCondition=new ConditionClause(getCriterionList(),getJoinInfoList()){
-                @Override
-                protected JoinInfo getJoinInfo(Class tClass, Field field) {
-                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
-                    handleJoinInfo(joinInfo);
-                    return joinInfo;
-                }
+//                @Override
+//                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+//                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+//                    handleJoinInfo(joinInfo);
+//                    return joinInfo;
+//                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -122,12 +122,12 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     public ConditionClause<Model> min(){
         if(minCondition==null){
             minCondition=new ConditionClause(getCriterionList(),getJoinInfoList()){
-                @Override
-                protected JoinInfo getJoinInfo(Class tClass, Field field) {
-                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
-                    handleJoinInfo(joinInfo);
-                    return joinInfo;
-                }
+//                @Override
+//                protected JoinInfo getJoinInfo(Class tClass, Field field) {
+//                    JoinInfo joinInfo= super.getJoinInfo(tClass, field);
+//                    handleJoinInfo(joinInfo);
+//                    return joinInfo;
+//                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -143,11 +143,11 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
         return selectList;
     }
 
-    public void setGbAttribute(String gbAttribute) {
-        this.gbAttribute = gbAttribute;
-    }
-
-    public String getGbAttribute() {
-        return gbAttribute;
-    }
+//    public void setGbAttribute(String gbAttribute) {
+//        this.gbAttribute = gbAttribute;
+//    }
+//
+//    public String getGbAttribute() {
+//        return gbAttribute;
+//    }
 }

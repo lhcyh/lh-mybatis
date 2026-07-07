@@ -69,7 +69,7 @@ public class MybatisFactory {
         code.append("        <foreach collection=\"leftJoinList\" item=\"joinInfo\">\n");
         code.append("            LEFT JOIN ${joinInfo.rightTable} on ${joinInfo.leftTable}.${joinInfo.leftKey}=${joinInfo.rightTable}.${joinInfo.rightKey}\n");
         code.append("            <if test=\"joinInfo.key!=null\">\n");
-        code.append("                AND ${joinInfo.leftTable}.${joinInfo.key} = ${joinInfo.value}\n");
+        code.append("                AND ${joinInfo.leftTable}.${joinInfo.key} = #{joinInfo.value}\n");
         code.append("            </if>\n");
         code.append("        </foreach>\n");
         code.append("    </sql>\n");

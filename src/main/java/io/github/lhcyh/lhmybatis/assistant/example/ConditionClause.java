@@ -13,6 +13,7 @@ import java.util.Set;
 public class ConditionClause<Model> {
     private List<Criterion> criterionList;
     private Set<JoinInfo> leftJoinList;
+    private String primaryAttribute;
     public ConditionClause(List<Criterion> criterionList, Set<JoinInfo> joinInfoSet){
         this.criterionList=criterionList;
         this.leftJoinList=joinInfoSet;
@@ -131,7 +132,7 @@ public class ConditionClause<Model> {
      * @param field 左表类里的右表属性
      * @return 如果 field 属性为连表属性则返回连表信息，否则返回 null
      */
-    protected JoinInfo getJoinInfo(Class tClass,Field field){
+    private JoinInfo getJoinInfo(Class tClass,Field field){
         LeftJoin annotation=field.getAnnotation(LeftJoin.class);
         if(annotation==null){
             return null;
@@ -208,6 +209,14 @@ public class ConditionClause<Model> {
                 if(fieldIgnore!=null){
                     continue;
                 }
+
+                if(modelClass==model.getClass()){
+                    Primary primary=fields[i].getAnnotation(Primary.class);
+                    if(primary!=null){
+                        this.primaryAttribute=getAttribute(modelClass,fields[i]);
+                    }
+                }
+
                 fieldList.add(fields[i]);
             }
             if(modelClass.getSuperclass()==Object.class){
@@ -378,8 +387,8 @@ public class ConditionClause<Model> {
             if(valueList.size()>0){
                 JoinInfo joinInfo=getJoinInfo(modelList.get(0).getClass(),field);
                 if(joinInfo!=null){
-                    loadCriterion(prefix,valueList,condition);
                     leftJoinList.add(joinInfo);
+                    loadCriterion(prefix,valueList,condition);
                 }else {
                     Criterion criterion=createCriterion(prefix,modelList.get(0).getClass(),field,condition);
                     criterion.setValue(valueList);
@@ -412,8 +421,8 @@ public class ConditionClause<Model> {
             }
             JoinInfo joinInfo=getJoinInfo(model1.getClass(),field);
             if(joinInfo!=null){
-                loadCriterion(prefix,value1,value2,condition);
                 leftJoinList.add(joinInfo);
+                loadCriterion(prefix,value1,value2,condition);
             }else {
                 Criterion criterion=createCriterion(prefix,model1.getClass(),field,condition);
                 criterion.setValue(value1);
@@ -623,5 +632,12 @@ public class ConditionClause<Model> {
 
     public Set<JoinInfo> getJoinInfoList() {
         return leftJoinList;
+    }
+
+    public String getPrimaryAttribute() {
+        if(primaryAttribute==null){
+            return "id";
+        }
+        return primaryAttribute;
     }
 }
