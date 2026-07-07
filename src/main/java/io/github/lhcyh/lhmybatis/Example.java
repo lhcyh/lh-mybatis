@@ -17,7 +17,7 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
     private List<Criterion> orderList;
 //    /** 分组准则 **/
 //    private List<Criterion> groupList;
-    private List<Criterion> havingList;
+//    private List<Criterion> havingList;
     private Having<Model> having;
     /** sql语句的limit的起始行数，从0开始 **/
     private Integer limitStart;
@@ -80,11 +80,57 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
 
     public Having<Model> having(){
         if(having==null){
-            havingList=new ArrayList<>();
-            having=new Having<>(havingList,getJoinInfoList());
+            having=new Having<>(getJoinInfoList());
         }
         return having;
     }
+
+    private AggOrderBy aggHandle(Having<Model> tempHaving){
+        this.having();
+        if(tempHaving.getGbAttribute()!=null) {
+            having.setGbAttribute(tempHaving.getGbAttribute());
+            having.getSelectList().addAll(tempHaving.getSelectList());
+        }
+        AggOrderBy aggOrderBy=new AggOrderBy() {
+            @Override
+            public void orderBy(Order order) {
+                for(Criterion criterion:tempHaving.getCriterionList()){
+                    criterion.setValue(order.name());
+                    if(orderList==null){
+                        orderList=new ArrayList<>();
+                    }
+                    orderList.add(criterion);
+                }
+            }
+        };
+        return aggOrderBy;
+    }
+
+    public AggOrderBy sum(Model model){
+        Having<Model> tempHaving=new Having<>(getJoinInfoList());
+        tempHaving.sum().andEqualTo(model);
+        return aggHandle(tempHaving);
+    }
+
+    public AggOrderBy count(Model model){
+        Having<Model> tempHaving=new Having<>(getJoinInfoList());
+        tempHaving.count().andEqualTo(model);
+        return aggHandle(tempHaving);
+    }
+
+    public AggOrderBy avg(Model model){
+        Having<Model> tempHaving=new Having<>(getJoinInfoList());
+        tempHaving.avg().andEqualTo(model);
+        return aggHandle(tempHaving);
+    }
+
+    public AggOrderBy max(Model model){
+        Having<Model> tempHaving=new Having<>(getJoinInfoList());
+        tempHaving.max().andEqualTo(model);
+        return aggHandle(tempHaving);
+    }
+
+
 
 //    public Having<Model> groupBy(Model model){
 //        if(groupList==null){
@@ -153,15 +199,30 @@ public class Example<Model> extends ConditionParenthesisClause<Model>{
     }
 
     public List<Criterion> getHavingList() {
-        return havingList;
+        if(having!=null&&having.getCriterionList().size()>0){
+            return having.getCriterionList();
+        }
+        return null;
     }
+
+//    public String getAggregateSelect(){
+//        if(having==null){
+//            return "";
+//        }else {
+//            return having.getAggregateSelect();
+//        }
+//    }
 
     public String getAggregateSelect(){
         if(having==null){
             return "";
-        }else {
-            return having.getAggregateSelect();
         }
+        StringBuilder select=new StringBuilder();
+        for(String sl:having.getSelectList()){
+            select.append(",");
+            select.append(sl);
+        }
+        return select.toString();
     }
 
     public String getGbAttribute(){

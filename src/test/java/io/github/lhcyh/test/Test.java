@@ -12,3 +12,6 @@ public class Test {
 //        new Generator();
     }
 }
+
+/** https://juejin.cn/post/7366020842147381299 **/
+/** https://central.sonatype.com/ **/
