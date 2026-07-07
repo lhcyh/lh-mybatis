@@ -1,6 +1,7 @@
 package io.github.lhcyh.lhmybatis.assistant.example;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,8 +15,8 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     private Set<String> selectList;
     private String gbAttribute;
 
-    public Having(List<Criterion> criterionList, Set<JoinInfo> joinInfo){
-        super(criterionList,joinInfo);
+    public Having(Set<JoinInfo> joinInfo){
+        super(new ArrayList<>(),joinInfo);
         selectList=new HashSet<>();
     }
 
@@ -138,13 +139,12 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
         return minCondition;
     }
 
-    public String getAggregateSelect(){
-        StringBuilder select=new StringBuilder();
-        for(String sl:selectList){
-            select.append(",");
-            select.append(sl);
-        }
-        return select.toString();
+    public Set<String> getSelectList() {
+        return selectList;
+    }
+
+    public void setGbAttribute(String gbAttribute) {
+        this.gbAttribute = gbAttribute;
     }
 
     public String getGbAttribute() {
