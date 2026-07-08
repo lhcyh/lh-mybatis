@@ -1,7 +1,10 @@
 io\github\lhcyh\lhmybatis\assistant\example\Having$1.class
+io\github\lhcyh\lhmybatis\Primary.class
+io\github\lhcyh\lhmybatis\assistant\example\AggOrderBy.class
 io\github\lhcyh\lhmybatis\Generator$11.class
 io\github\lhcyh\lhmybatis\Generator$21.class
 io\github\lhcyh\lhmybatis\assistant\example\Criterion.class
+io\github\lhcyh\lhmybatis\LeftJoinKv.class
 io\github\lhcyh\lhmybatis\assistant\generator\pojo\ProjectCode.class
 io\github\lhcyh\lhmybatis\assistant\example\Condition.class
 io\github\lhcyh\lhmybatis\assistant\example\Prefix.class
@@ -44,6 +47,7 @@ io\github\lhcyh\lhmybatis\FieldIgnore.class
 io\github\lhcyh\lhmybatis\Generator$19.class
 io\github\lhcyh\lhmybatis\assistant\example\JoinInfo.class
 io\github\lhcyh\lhmybatis\Generator$8.class
+io\github\lhcyh\lhmybatis\Example$1.class
 io\github\lhcyh\lhmybatis\assistant\example\Having$5.class
 io\github\lhcyh\lhmybatis\Generator$12.class
 io\github\lhcyh\lhmybatis\LeftJoin.class

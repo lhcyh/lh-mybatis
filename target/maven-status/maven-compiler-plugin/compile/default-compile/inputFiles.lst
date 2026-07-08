@@ -4,12 +4,14 @@ D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\Having.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\generator\enums\Type.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\Order.java
+D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\AggOrderBy.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\FieldIgnore.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\JoinInfo.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\generator\pojo\ProjectCode.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\Condition.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\LeftJoin.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\Generator.java
+D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\LeftJoinKv.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\generator\pojo\ForeignKey.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\generator\utils\TableHandle.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\Criterion.java
@@ -22,4 +24,5 @@ D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\ValueType.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\example\ConditionClause.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\Column.java
+D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\Primary.java
 D:\cyh\software\data\ideaData\lh-mybatis\src\main\java\io\github\lhcyh\lhmybatis\assistant\generator\utils\MybatisFactory.java

@@ -6,7 +6,7 @@
 
     <groupId>io.github.lhcyh</groupId>
     <artifactId>lh-mybatis</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
     <packaging>jar</packaging>
     <name>LhMybatis</name>
     <url>https://github.com/lhcyh/lh-mybatis</url>
@@ -159,7 +159,7 @@
                         <configuration>
                             <!-- 这里的serverId是之前在settings.xml中配置的 -->
                             <publishingServerId>sonatype-lhcyh</publishingServerId>
-                            <tokenAuth>true</tokenAuth>
+<!--                            <tokenAuth>true</tokenAuth>-->
                         </configuration>
                     </plugin>
                 </plugins>
