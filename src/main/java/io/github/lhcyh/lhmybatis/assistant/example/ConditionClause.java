@@ -13,7 +13,6 @@ import java.util.Set;
 public class ConditionClause<Model> {
     private List<Criterion> criterionList;
     private Set<JoinInfo> leftJoinList;
-    private String primaryAttribute;
     public ConditionClause(List<Criterion> criterionList, Set<JoinInfo> joinInfoSet){
         this.criterionList=criterionList;
         this.leftJoinList=joinInfoSet;
@@ -91,7 +90,7 @@ public class ConditionClause<Model> {
      * @param tClass
      * @return
      */
-    private String getTableName(Class tClass){
+    protected String getTableName(Class tClass){
         Class<?> iClass = getInitialClass(tClass);
         Table tableName=iClass.getAnnotation(Table.class);
         if(tableName!=null){
@@ -132,7 +131,7 @@ public class ConditionClause<Model> {
      * @param field 左表类里的右表属性
      * @return 如果 field 属性为连表属性则返回连表信息，否则返回 null
      */
-    private JoinInfo getJoinInfo(Class tClass,Field field){
+    protected JoinInfo getJoinInfo(Class tClass,Field field){
         LeftJoin annotation=field.getAnnotation(LeftJoin.class);
         if(annotation==null){
             return null;
@@ -208,13 +207,6 @@ public class ConditionClause<Model> {
                 FieldIgnore fieldIgnore=fields[i].getAnnotation(FieldIgnore.class);
                 if(fieldIgnore!=null){
                     continue;
-                }
-
-                if(modelClass==model.getClass()){
-                    Primary primary=fields[i].getAnnotation(Primary.class);
-                    if(primary!=null){
-                        this.primaryAttribute=getAttribute(modelClass,fields[i]);
-                    }
                 }
 
                 fieldList.add(fields[i]);
@@ -634,10 +626,4 @@ public class ConditionClause<Model> {
         return leftJoinList;
     }
 
-    public String getPrimaryAttribute() {
-        if(primaryAttribute==null){
-            return "id";
-        }
-        return primaryAttribute;
-    }
 }

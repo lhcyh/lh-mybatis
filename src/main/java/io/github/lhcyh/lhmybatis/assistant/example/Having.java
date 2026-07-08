@@ -1,5 +1,8 @@
 package io.github.lhcyh.lhmybatis.assistant.example;
 
+import io.github.lhcyh.lhmybatis.FieldIgnore;
+import io.github.lhcyh.lhmybatis.Primary;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +16,7 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
     private ConditionClause maxCondition;
     private ConditionClause minCondition;
     private Set<String> selectList;
-//    private String gbAttribute;
+    private String gbAttribute;
 
     public Having(Set<JoinInfo> joinInfo){
         super(new ArrayList<>(),joinInfo);
@@ -39,6 +42,21 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
 //        }
 //    }
 
+    private void handleGbAttribute(Object model,List<Field> fieldList){
+        if(gbAttribute==null) {
+            for (Field field : fieldList) {
+                Primary primary = field.getAnnotation(Primary.class);
+                if (primary != null) {
+                    gbAttribute = super.getAttribute(model.getClass(), field);
+                    break;
+                }
+            }
+            if(gbAttribute==null){
+                gbAttribute="`"+super.getTableName(model.getClass())+"`.id";
+            }
+        }
+    }
+
     public ConditionClause<Model> sum(){
         if(sumCondition==null){
             sumCondition=new ConditionClause<Model>(getCriterionList(),getJoinInfoList()){
@@ -48,6 +66,14 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
 //                    handleJoinInfo(joinInfo);
 //                    return joinInfo;
 //                }
+
+
+                @Override
+                protected List<Field> getFieldList(Object model) {
+                    List<Field> fieldList= super.getFieldList(model);
+                    handleGbAttribute(model,fieldList);
+                    return fieldList;
+                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -68,6 +94,14 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
 //                    handleJoinInfo(joinInfo);
 //                    return joinInfo;
 //                }
+
+
+                @Override
+                protected List<Field> getFieldList(Object model) {
+                    List<Field> fieldList= super.getFieldList(model);
+                    handleGbAttribute(model,fieldList);
+                    return fieldList;
+                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -90,6 +124,13 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
 //                }
 
                 @Override
+                protected List<Field> getFieldList(Object model) {
+                    List<Field> fieldList= super.getFieldList(model);
+                    handleGbAttribute(model,fieldList);
+                    return fieldList;
+                }
+
+                @Override
                 protected String getAttribute(Class tClass, Field field) {
                     String attribute= super.getAttribute(tClass, field);
                     return handleAttribute("AVG",attribute);
@@ -108,6 +149,13 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
 //                    handleJoinInfo(joinInfo);
 //                    return joinInfo;
 //                }
+
+                @Override
+                protected List<Field> getFieldList(Object model) {
+                    List<Field> fieldList= super.getFieldList(model);
+                    handleGbAttribute(model,fieldList);
+                    return fieldList;
+                }
 
                 @Override
                 protected String getAttribute(Class tClass, Field field) {
@@ -130,6 +178,13 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
 //                }
 
                 @Override
+                protected List<Field> getFieldList(Object model) {
+                    List<Field> fieldList= super.getFieldList(model);
+                    handleGbAttribute(model,fieldList);
+                    return fieldList;
+                }
+
+                @Override
                 protected String getAttribute(Class tClass, Field field) {
                     String attribute= super.getAttribute(tClass, field);
                     return handleAttribute("MIN",attribute);
@@ -143,11 +198,11 @@ public class Having<Model> extends ConditionParenthesisClause<Model> {
         return selectList;
     }
 
-//    public void setGbAttribute(String gbAttribute) {
-//        this.gbAttribute = gbAttribute;
-//    }
-//
-//    public String getGbAttribute() {
-//        return gbAttribute;
-//    }
+    public void setGbAttribute(String gbAttribute) {
+        this.gbAttribute = gbAttribute;
+    }
+
+    public String getGbAttribute() {
+        return gbAttribute;
+    }
 }
